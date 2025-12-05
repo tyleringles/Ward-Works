@@ -1,0 +1,5 @@
+uploads/*
+!uploads/.gitkeep
+# Ignore uploaded images, but KEEP the folder itself
+uploads/*
+!uploads/.gitkeep
