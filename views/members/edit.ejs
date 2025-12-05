@@ -6,14 +6,14 @@
       <p class="ww-subtitle">Update details for this ward member.</p>
     </div>
 
-    <!-- These links use the member ID sent from the controller -->
+    <!-- links use the member ID sent from the controller -->
     <div class="ww-header-actions">
       <!-- Goes back to the member’s detail page (GET /members/:id) -->
       <a href="/members/<%= member._id %>" class="ww-btn ww-btn-secondary">
         ← Back to Member
       </a>
 
-      <!-- Goes back to directory (GET /members) -->
+      <!-- this backs to directory (GET /members) -->
       <a href="/members" class="ww-btn ww-btn-secondary">
         Directory
       </a>
@@ -116,13 +116,13 @@
         </div>
       <% } %>
 
-   
+      <!-- Updated field name to match Multer (.single('avatar')) -->
       <div class="ww-form-group">
-        <label for="photo">Update Profile Photo (optional)</label>
+        <label for="avatar">Update Profile Photo (optional)</label>
         <input
           type="file"
-          id="photo"
-          name="photo"
+          id="avatar"
+          name="avatar"
           accept="image/*"
         />
         <p class="ww-help-text">Leave blank to keep the current photo.</p>
