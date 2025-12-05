@@ -1,0 +1,1120 @@
+/* ===== Global Reset ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Base Typography & Background ===== */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: radial-gradient(circle at top, #f5f7ff 0, #e2e8f0 40%, #cbd5e1 100%);
+  color: #0f172a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Layout: Header & Logo ===== */
+.ww-header {
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 10px 20px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.ww-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* logo left, hamburger right */
+  gap: 1rem;
+}
+
+.ww-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  gap: 0.75rem;
+}
+
+.ww-logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+/* ===== New Navigation: Hamburger + Drawer ===== */
+
+/* Hamburger button */
+.ww-nav-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.ww-nav-toggle-line {
+  width: 22px;
+  height: 2px;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+/* Drawer positioned on the RIGHT side */
+.ww-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0; /* right side */
+  width: 260px;
+  max-width: 80%;
+  height: 100%;
+  background: #020617;
+  color: #e5e7eb;
+  box-shadow: -4px 0 18px rgba(15, 23, 42, 0.7); /* shadow to left */
+  transform: translateX(100%); /* hidden off-screen to the right */
+  transition: transform 0.25s ease-out;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  padding-top: 4rem; /* below header */
+}
+
+/* Drawer visible */
+.ww-nav-drawer--open {
+  transform: translateX(0);
+}
+
+/* Drawer list layout */
+.ww-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+/* Shared link style */
+.ww-nav-link {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.ww-nav-link:hover {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(148, 163, 184, 0.7);
+}
+
+.ww-nav-link-accent {
+  background: #f97316;
+  color: #111827;
+  font-weight: 600;
+}
+
+.ww-nav-link-accent:hover {
+  background: #fb923c;
+}
+
+/* Logout button uses same look */
+.ww-nav-link-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.45rem 0.85rem;
+}
+
+/* Top-level items */
+.ww-nav-item {
+  margin: 0.15rem 0;
+}
+
+/* Group headers (Directory, Church Info) */
+.ww-nav-group-toggle {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.ww-nav-group-toggle:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.ww-nav-arrow {
+  font-size: 0.8rem;
+}
+
+/* Sublist (collapsed by default) */
+.ww-nav-sublist {
+  list-style: none;
+  margin: 0.15rem 0 0.4rem;
+  padding-left: 1.7rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.18s ease-out;
+}
+
+.ww-nav-sublist--open {
+  max-height: 500px; /* large enough for items */
+}
+
+/* Sublist links */
+.ww-nav-link-sub {
+  display: block;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #e5e7eb;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ww-nav-link-sub:hover {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.6);
+}
+
+/* User greeting style */
+.ww-nav-user {
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+/* Logout at bottom of drawer */
+.ww-nav-item-logout {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.ww-nav-logout-form {
+  margin: 0;
+}
+
+/* ===== Main & Footer ===== */
+.ww-main {
+  max-width: 1100px;
+  width: 100%;
+  margin: 1.5rem auto 2.5rem;
+  padding: 0 1rem 2rem;
+  flex: 1;
+}
+
+.ww-footer {
+  padding: 1rem 1.5rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  text-align: center;
+  border-top: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.95);
+  color: #cbd5e1;
+}
+
+/* ===== Buttons ===== */
+.ww-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.ww-btn-primary {
+  background: #2563eb;
+  color: #f9fafb;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+}
+
+.ww-btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 20px -4px rgba(37, 99, 235, 0.6);
+}
+
+.ww-btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.ww-btn-secondary:hover {
+  background: #d1d5db;
+}
+
+/* ===== Cards ===== */
+.ww-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+.ww-card + .ww-card {
+  margin-top: 1rem;
+}
+
+.ww-card-link {
+  font-size: 0.85rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.ww-card-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== Page Headers ===== */
+.ww-page-header {
+  margin-bottom: 1rem;
+}
+
+.ww-page-header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.6rem;
+}
+
+.ww-page-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+/* ===== Hero Section ===== */
+.ww-hero {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ww-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.ww-hero-copy {
+  background: rgba(15, 23, 42, 0.92);
+  color: #e5e7eb;
+  padding: 1.8rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.5);
+}
+
+.ww-hero-title {
+  font-size: 2.1rem;
+  margin: 0 0 0.5rem;
+}
+
+.ww-hero-subtitle {
+  margin: 0 0 1.25rem;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.ww-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.ww-hero-note {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.ww-hero-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ww-hero-image {
+  max-width: 100%;
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
+  object-fit: cover;
+}
+
+/* ===== Scripture of the Day ===== */
+.scripture-card {
+  max-width: 700px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.scripture-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.scripture-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.scripture-ref {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* ===== Sections & Features ===== */
+.ww-section {
+  margin-top: 2rem;
+}
+
+.ww-section-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.ww-section-header h2 {
+  margin: 0 0 0.25rem;
+}
+
+.ww-section-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.ww-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.ww-feature-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.ww-feature-card p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+/* Two-column section */
+.ww-two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.ww-col h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== Lists ===== */
+.ww-list {
+  margin: 0.25rem 0 0.75rem;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+}
+
+.ww-list li + li {
+  margin-top: 0.15rem;
+}
+
+/* ===== Tables ===== */
+.ww-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ww-table th,
+.ww-table td {
+  padding: 0.55rem 0.6rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+  text-align: left;
+}
+
+.ww-table th {
+  background: rgba(15, 23, 42, 0.85);
+  color: #e5e7eb;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.ww-table tr:nth-child(even) td {
+  background: rgba(248, 250, 252, 0.9);
+}
+
+/* ===== Forms ===== */
+.ww-form,
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ww-form-group,
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ww-form-group label,
+.auth-field label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.ww-form-group input,
+.ww-form-group select,
+.ww-form-group textarea,
+.auth-field input,
+.auth-field select,
+.auth-field textarea {
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.ww-form-group input:focus,
+.ww-form-group select:focus,
+.ww-form-group textarea:focus,
+.auth-field input:focus,
+.auth-field select:focus,
+.auth-field textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+}
+
+.ww-form-actions,
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.ww-form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.ww-required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+/* ===== Auth Pages ===== */
+.auth-page {
+  max-width: 480px;
+  margin: 2.5rem auto;
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.96);
+  padding: 1.75rem 1.9rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.auth-card h1 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+
+.auth-subtitle {
+  margin-top: 0;
+  margin-bottom: 0.9rem;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.auth-error {
+  margin-bottom: 0.9rem;
+  padding: 0.6rem 0.7rem;
+  background: #fef2f2;
+  border-radius: 0.6rem;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+/* ===== Callings & Attendance Sections ===== */
+.callings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.callings-list {
+  margin-top: 0.5rem;
+}
+
+/* ===== Admin Page ===== */
+.admin-header {
+  margin-bottom: 1rem;
+}
+
+/* ===== 403 / 404 ===== */
+.ww-center {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* ===== Error & Helper Text ===== */
+.ww-error {
+  margin-bottom: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  background: #fef2f2;
+  border-radius: 0.6rem;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.ww-error ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.ww-help-text {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* ===== Hero Banner (Home) ===== */
+.ww-hero-banner {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.45);
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(15, 23, 42, 0.55),
+      rgba(15, 23, 42, 0.85)
+    ),
+    url('/img/ward-hero.png');
+  background-size: cover;
+  background-position: center;
+  color: #e5e7eb;
+}
+
+.ww-hero-overlay {
+  padding: 3.5rem 2.25rem;
+}
+
+.ww-hero-banner-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.ww-hero-banner-text {
+  max-width: 520px;
+}
+
+.ww-hero-ward-title {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  color: #cbd5e1;
+}
+
+.ww-hero-ward-heading {
+  font-size: 2.4rem;
+  margin: 0 0 0.4rem;
+}
+
+.ww-hero-tagline {
+  font-size: 0.95rem;
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #e5e7eb;
+}
+
+.ww-hero-meeting {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+  color: #e5e7eb;
+}
+
+.ww-hero-powered {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 0.5rem;
+}
+
+.ww-hero-banner-events {
+  max-width: 340px;
+  width: 100%;
+}
+
+.ww-hero-banner-events .ww-card {
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.7);
+}
+
+.ww-hero-banner-events .ww-card .ww-card-link {
+  color: #93c5fd;
+}
+
+.ww-hero-banner-events .ww-card .ww-card-link:hover {
+  color: #bfdbfe;
+}
+
+.ww-hero-banner-events .ww-list li {
+  color: #e5e7eb;
+}
+
+.ww-hero-events-heading {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.ww-hero-events-empty {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Hero banner responsive */
+@media (max-width: 768px) {
+  .ww-hero-overlay {
+    padding: 2.25rem 1.5rem;
+  }
+
+  .ww-hero-banner-inner {
+    flex-direction: column;
+  }
+
+  .ww-hero-banner-events {
+    max-width: 100%;
+  }
+}
+
+/* ===== Ward Calendar ===== */
+.ww-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.ww-cal-title {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.ww-cal-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  text-decoration: none;
+  color: #111827;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: background 0.15s ease, transform 0.08s ease;
+}
+
+.ww-cal-nav:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.ww-calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.85rem;
+}
+
+.ww-calendar thead th {
+  background: #111827;
+  color: #e5e7eb;
+  padding: 0.5rem 0.3rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.ww-calendar tbody td {
+  border: 1px solid #e5e7eb;
+  vertical-align: top;
+  height: 90px;
+  padding: 0.4rem;
+  background: #f8fafc;
+}
+
+.ww-cal-day-empty {
+  background: #f1f5f9;
+}
+
+.ww-cal-day-number {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
+  color: #0f172a;
+}
+
+.ww-cal-events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ww-cal-event {
+  background: #e0f2fe;
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.3rem;
+  margin-bottom: 0.2rem;
+  border: 1px solid #bae6fd;
+}
+
+.ww-cal-event-title {
+  font-weight: 500;
+  margin-bottom: 0.05rem;
+}
+
+.ww-cal-event-meta {
+  font-size: 0.75rem;
+  color: #0f172a;
+}
+
+@media (max-width: 768px) {
+  .ww-calendar thead {
+    font-size: 0.75rem;
+  }
+
+  .ww-calendar tbody td {
+    height: 80px;
+    padding: 0.3rem;
+  }
+}
+
+/* ===== Profile / Details ===== */
+.ww-detail-list {
+  margin: 0;
+}
+
+.ww-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.ww-detail-row dt {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.ww-detail-row dd {
+  margin: 0;
+  text-align: right;
+}
+
+.ww-profile-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.ww-profile-photo-wrap {
+  flex-shrink: 0;
+}
+
+.ww-profile-photo {
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid #cbd5e1;
+}
+
+/* Profile responsive */
+@media (max-width: 768px) {
+  .ww-profile-layout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ww-detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ww-detail-row dd {
+    text-align: left;
+  }
+}
+
+/* ===== Generic Narrow Card Layout ===== */
+.ww-card-narrow {
+  max-width: 640px;
+  margin: 2rem auto;
+}
+
+.ww-form-row {
+  margin-bottom: 1rem;
+}
+
+.ww-field span {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.ww-text-muted {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+/* ===== Alerts ===== */
+.ww-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.ww-alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ww-alert-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* ===== Avatar / Profile Picture ===== */
+.ww-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ww-avatar-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.ww-avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+/* Smaller helper text variant */
+.ww-text-muted {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+}
+
+/* ===== Program List ===== */
+.ww-program-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.ww-program-item + .ww-program-item {
+  margin-top: 0.75rem;
+}
+
+.ww-program-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  background: rgba(15, 23, 42, 0.03);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ww-program-link:hover {
+  background: rgba(15, 23, 42, 0.06);
+  transform: translateY(-1px);
+}
+
+.ww-program-main {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.ww-program-date {
+  min-width: 8rem;
+}
+
+.ww-program-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ww-program-theme span {
+  font-weight: 600;
+}
+
+.ww-program-arrow {
+  font-size: 1.25rem;
+  opacity: 0.6;
+}
+
+/* ===== Mini Calendar (Next Events) ===== */
+.mini-calendar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mini-event-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.mini-date-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 0.75rem;
+  background: #1e293b;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-date-month {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.mini-date-day {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.mini-event-info h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mini-event-info p {
+  margin: 2px 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.mini-event-desc {
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+/* ===== Responsive (General) ===== */
+@media (max-width: 768px) {
+  .ww-header-inner {
+    justify-content: space-between;
+  }
+
+  .ww-hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .ww-hero-copy {
+    order: 1;
+  }
+
+  .ww-hero-image-wrap {
+    order: 2;
+  }
+}

@@ -1,0 +1,101 @@
+<!--
+  events/admin-list.ejs
+  ---------------------------------------------------------
+  This is the admin-only event management page.
+
+  Data provided by eventController.adminList():
+     • events → array of Event documents from MongoDB
+  The route protecting this page is:
+     GET /events/admin  (isAuth + isAdmin)
+-->
+
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>Manage Events</h1>
+      <p class="ww-subtitle">
+        Add, edit, or remove ward events. Only admins can see this page.
+      </p>
+    </div>
+
+    <div class="ww-header-actions">
+      <!-- Link to form handled by eventController.showNew() -->
+      <a href="/events/admin/new" class="ww-btn ww-btn-primary">
+        + New Event
+      </a>
+
+      <!-- Public calendar page (no auth required) -->
+      <a href="/events" class="ww-btn ww-btn-secondary">
+        View Public Calendar
+      </a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+    <% if (!events || events.length === 0) { %>
+      <!-- If the controller returned an empty array -->
+      <p>No events yet. Click "New Event" to add one.</p>
+
+    <% } else { %>
+      <table class="ww-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Recurrence</th>
+            <th></th> <!-- actions column -->
+          </tr>
+        </thead>
+
+        <tbody>
+          <% 
+            // Loop over events fetched via Event.find().lean()
+            events.forEach(e => { 
+          %>
+            <tr>
+              <!-- startDate is a Date, converted to readable text -->
+              <td><%= new Date(e.startDate).toLocaleDateString() %></td>
+
+              <td><%= e.title %></td>
+              <td><%= e.location || '' %></td>
+
+              <!-- Convert stored value → friendly label -->
+              <td>
+                <%=
+                  e.recurrence === 'weekly' ? 'Weekly' :
+                  e.recurrence === 'monthly' ? 'Monthly' :
+                  'None'
+                %>
+              </td>
+
+              <td>
+                <!-- Edit form → handled by eventController.showEdit() -->
+                <a href="/events/admin/<%= e._id %>/edit" class="ww-card-link">
+                  Edit
+                </a>
+
+                <!-- Delete form → handled by eventController.delete() -->
+                <form
+                  action="/events/admin/<%= e._id %>?_method=DELETE"
+                  method="POST"
+                  style="display:inline;"
+                  onsubmit="return confirm('Delete this event?');"
+                >
+                  <button
+                    type="submit"
+                    class="ww-card-link"
+                    style="border:none; background:none; padding:0; margin-left:0.5rem; color:#b91c1c;"
+                  >
+                    Delete
+                  </button>
+                </form>
+
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+</main>

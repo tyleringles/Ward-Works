@@ -1,0 +1,55 @@
+<main class="ww-main">
+
+  <header class="ww-page-header">
+    <div>
+      <h1>Attendance</h1>
+      <p class="ww-subtitle">
+        Track who’s attending ward meetings. Members can scan a QR code to check in.
+      </p>
+    </div>
+
+    <div class="ww-header-actions">
+      <!-- Simple link back to the member directory (GET /members) -->
+      <a href="/members" class="ww-btn ww-btn-secondary">
+        ← Back to Directory
+      </a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+    <h2>How QR Check-In Works</h2>
+
+    <ol class="ww-list">
+      <li>Leaders display a QR code in sacrament meeting or class.</li>
+
+      <li>Members log in on their phone and scan the code.</li>
+
+      <li>
+        <!-- 
+          This explains how the system uses the /attendance/checkin route.
+          That route is handled by attendanceController.showCheckin(),
+          which loads the member and shows their current status.
+        -->
+        The link goes to <code>/attendance/checkin</code>, and the system marks them
+        present for today.
+      </li>
+    </ol>
+
+    <p style="margin-top: 1rem;">
+      For testing, while logged in, you can click this link directly:
+    </p>
+
+    <!-- 
+      This link triggers the GET /attendance/checkin route.
+      If the logged-in user has a linked Member record,
+      attendanceController.showCheckin() displays a check-in page.
+    -->
+    <p>
+      <a href="/attendance/checkin" class="ww-btn ww-btn-primary">
+        Test Check-In
+      </a>
+    </p>
+
+  </section>
+
+</main>

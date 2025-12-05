@@ -1,0 +1,80 @@
+<main class="ww-main">
+
+  <% if (!member) { %>
+    <!-- 
+      If attendanceController.memberHistory() could not find a Member
+      (invalid ID or deleted), "member" will be null → show fallback.
+    -->
+    <header class="ww-page-header">
+      <div>
+        <h1>Member Attendance</h1>
+        <p class="ww-subtitle">Member not found.</p>
+      </div>
+
+      <div class="ww-header-actions">
+        <!-- Back to directory → GET /members -->
+        <a href="/members" class="ww-btn ww-btn-secondary">
+          ← Back to Directory
+        </a>
+      </div>
+    </header>
+
+  <% } else { %>
+
+    <!-- 
+      Page receives:
+        member  → from Member.findById(req.params.id)
+        records → from Attendance.find({ member: id })
+      via attendanceController.memberHistory()
+    -->
+    <header class="ww-page-header">
+      <div>
+        <h1>Attendance for <%= member.firstName %> <%= member.lastName %></h1>
+        <p class="ww-subtitle">
+          Attendance history for this ward member.
+        </p>
+      </div>
+
+      <div class="ww-header-actions">
+        <!-- Link to member detail page → GET /members/:id -->
+        <a href="/members/<%= member._id %>" class="ww-btn ww-btn-secondary">
+          ← Back to Member
+        </a>
+
+        <!-- Overall attendance history → GET /attendance/history -->
+        <a href="/attendance/history" class="ww-btn ww-btn-secondary">
+          Attendance History
+        </a>
+      </div>
+    </header>
+
+    <% if (!records || records.length === 0) { %>
+      <!-- If no Attendance records exist for this member -->
+      <p>No attendance records found for this member.</p>
+
+    <% } else { %>
+      <section class="ww-card">
+        <h2>Recorded Dates</h2>
+
+        <!-- 
+          For each attendance record:
+            rec.date → stored as "YYYY-MM-DD"
+          Link goes to date-specific attendance lookup:
+            GET /attendance/date/:date
+          Handled by attendanceController.showByDate()
+        -->
+        <ul class="ww-list">
+          <% records.forEach(rec => { %>
+            <li>
+              <a href="/attendance/date/<%= rec.date %>">
+                <%= rec.date %>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      </section>
+    <% } %>
+
+  <% } %>
+
+</main>

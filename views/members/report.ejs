@@ -1,0 +1,85 @@
+<!-- views/members/report.ejs -->
+
+<section class="ww-card ww-card-narrow">
+  <h1>Member Reports</h1>
+
+  <p class="ww-text-muted">
+    Overview of ward members based on current directory data.
+  </p>
+
+  <!-- 
+    These stats come from memberController.report:
+      totalMembers → total count of Member docs
+      genderCounts → object { male, female, other, unknown }
+  -->
+  <div class="ww-report-grid">
+    <div class="ww-report-stat">
+      <span class="ww-report-label">Total Members</span>
+      <span class="ww-report-value"><%= totalMembers %></span>
+    </div>
+
+    <div class="ww-report-stat">
+      <span class="ww-report-label">Male</span>
+      <span class="ww-report-value"><%= genderCounts.male %></span>
+    </div>
+
+    <div class="ww-report-stat">
+      <span class="ww-report-label">Female</span>
+      <span class="ww-report-value"><%= genderCounts.female %></span>
+    </div>
+
+    <div class="ww-report-stat">
+      <span class="ww-report-label">Other / Unknown</span>
+      <span class="ww-report-value">
+        <!-- genderCounts passed directly from report controller -->
+        <%= genderCounts.other + genderCounts.unknown %>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="ww-card ww-card-narrow">
+  <h2>Recently Updated Members</h2>
+
+  <!-- 
+    recentMembers is provided by memberController.report.
+    It is typically a query sorted by updatedAt (or createdAt fallback).
+  -->
+  <% if (recentMembers && recentMembers.length > 0) { %>
+    <table class="ww-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% recentMembers.forEach(m => { %>
+          <tr>
+            <td><%= m.firstName %> <%= m.lastName %></td>
+            <td><%= m.email || '—' %></td>
+            <td><%= m.phone || '—' %></td>
+
+            <!-- 
+              Prefer updatedAt; fallback to createdAt.
+              These values come directly from the Member schema timestamps.
+            -->
+            <td>
+              <% if (m.updatedAt) { %>
+                <%= new Date(m.updatedAt).toLocaleDateString() %>
+              <% } else if (m.createdAt) { %>
+                <%= new Date(m.createdAt).toLocaleDateString() %>
+              <% } else { %>
+                —
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p class="ww-text-muted">No recent members found.</p>
+  <% } %>
+</section>

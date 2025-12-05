@@ -1,0 +1,68 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <h1>Leader Login</h1>
+    <p class="auth-subtitle">
+      Sign in to manage the ward directory, callings, and attendance.
+    </p>
+
+    <% 
+      // errorMessage is passed from authController.getLogin or postLogin
+      // If login fails, the controller provides a string that we display here
+    %>
+    <% if (errorMessage) { %>
+      <div class="auth-error"><%= errorMessage %></div>
+    <% } %>
+
+    <!-- 
+      Submits to POST /auth/login
+      authController.postLogin will:
+        • Validate email/password
+        • Check user exists
+        • Compare hashed passwords
+        • Create req.session.user on success
+    -->
+    <form action="/auth/login" method="POST" class="auth-form">
+
+      <div class="auth-field">
+        <label for="email">Email</label>
+
+        <!-- 
+          The "email" field becomes req.body.email inside postLogin()
+        -->
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="you@example.com"
+        />
+      </div>
+
+      <div class="auth-field">
+        <label for="password">Password</label>
+
+        <!-- 
+           "password" field becomes req.body.password after login
+        -->
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          placeholder="••••••••"
+        />
+      </div>
+
+      <div class="auth-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">Login</button>
+
+        <!-- 
+          this link loads GET /auth/signup
+          The controller then shows the signup view
+        -->
+        <a href="/auth/signup" class="ww-btn ww-btn-secondary">Create an account</a>
+      </div>
+
+    </form>
+  </div>
+</section>

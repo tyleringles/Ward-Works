@@ -1,0 +1,82 @@
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>Member Details</h1>
+      <p class="ww-subtitle">View details for this ward member.</p>
+    </div>
+
+    <div class="ww-header-actions">
+      <!-- Link back to member list (GET /members) -->
+      <a href="/members" class="ww-btn ww-btn-secondary">← Back to Directory</a>
+
+      <!-- Edit page (GET /members/:id/edit) -->
+      <a href="/members/<%= member._id %>/edit" class="ww-btn ww-btn-primary">Edit</a>
+
+      <!-- Delete request (DELETE /members/:id, method-override used here) -->
+      <form
+        action="/members/<%= member._id %>?_method=DELETE"
+        method="POST"
+        class="ww-inline-form"
+        onsubmit="return confirm('Delete this member?');"
+      >
+        <button type="submit" class="ww-btn ww-btn-danger">
+          Delete
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <section class="ww-card">
+    <!-- member object comes from memberController.show -->
+    <h2><%= member.firstName %> <%= member.lastName %></h2>
+
+    <!-- Display profile photo only if member.photo exists.
+         This field is set by Multer in memberController.create/update. -->
+    <% if (member.photo) { %>
+      <div class="ww-form-group" style="margin: 1rem 0;">
+        <img
+          src="<%= member.photo %>"
+          alt="Profile photo of <%= member.firstName %> <%= member.lastName %>"
+          style="max-width: 180px; border-radius: 12px; box-shadow: 0 8px 20px rgba(15,23,42,0.25);"
+        />
+      </div>
+    <% } %>
+
+    <!-- Display all user fields -->
+    <dl class="ww-detail-list">
+      <div class="ww-detail-row">
+        <dt>Email</dt>
+        <dd><%= member.email || '—' %></dd>
+      </div>
+
+      <div class="ww-detail-row">
+        <dt>Phone</dt>
+        <dd><%= member.phone || '—' %></dd>
+      </div>
+
+      <div class="ww-detail-row">
+        <dt>Gender</dt>
+        <!-- Gender defaults handled in controller/model -->
+        <dd><%= member.gender || 'unknown' %></dd>
+      </div>
+
+      <!-- Dates come from Mongoose timestamps (createdAt, updatedAt) -->
+      <div class="ww-detail-row">
+        <dt>Created</dt>
+        <dd><%= member.createdAt ? member.createdAt.toLocaleString() : '—' %></dd>
+      </div>
+
+      <div class="ww-detail-row">
+        <dt>Last Updated</dt>
+        <dd><%= member.updatedAt ? member.updatedAt.toLocaleString() : '—' %></dd>
+      </div>
+    </dl>
+
+    <!-- Link to attendance history (GET /attendance/member/:id) -->
+    <p style="margin-top: 1rem;">
+      <a href="/attendance/member/<%= member._id %>" class="ww-link">
+        View attendance history for this member
+      </a>
+    </p>
+  </section>
+</main>

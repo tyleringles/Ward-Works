@@ -1,0 +1,104 @@
+<section class="ww-page-header">
+  <h1>Record Attendance</h1>
+  <p>Select who was present for the selected date.</p>
+</section>
+
+<section class="ww-card">
+
+  <!-- 
+    This form POSTs to /attendance/today
+    The controller handling that route will:
+      • Read req.body.date
+      • Read req.body.present (array of member IDs)
+      • Save attendance for today
+  -->
+  <form action="/attendance/today" method="POST">
+
+    <div class="ww-form-group">
+      <label for="date">Date</label>
+
+      <!-- 
+        selectedDate is provided by the controller.
+        It pre-fills the date input so the user does not need to re-enter it.
+      -->
+      <input
+        type="date"
+        id="date"
+        name="date"
+        value="<%= selectedDate %>"
+        required
+      />
+    </div>
+
+    <% if (members.length === 0) { %>
+
+      <p>No members in the directory yet.</p>
+
+    <% } else { %>
+
+      <table class="ww-table">
+        <thead>
+          <tr>
+            <th>Present</th>
+            <th>Member</th>
+            <th>Contact</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% 
+            // Loop through each member passed from the controller
+            members.forEach(member => { 
+              // Convert _id to string to match keys in attendanceMap
+              const id = member._id.toString();
+
+              // attendanceMap[id] tells us if that member was previously recorded present
+              const wasPresent = attendanceMap[id];
+          %>
+
+            <tr>
+              <td>
+                <!-- 
+                  All checkboxes use the SAME name="present"
+                  That means controller receives an array:
+                    req.body.present = ["id1", "id2", ...]
+                -->
+                <input
+                  type="checkbox"
+                  name="present"
+                  value="<%= member._id %>"
+                  <%= wasPresent ? 'checked' : '' %>
+                />
+              </td>
+
+              <td><%= member.firstName %> <%= member.lastName %></td>
+
+              <td>
+                <!-- Contact info is optional, so fallback order is email → phone → emdash -->
+                <% if (member.email) { %>
+                  <%= member.email %>
+                <% } else if (member.phone) { %>
+                  <%= member.phone %>
+                <% } else { %>
+                  —
+                <% } %>
+              </td>
+            </tr>
+
+          <% }) %>
+        </tbody>
+      </table>
+
+    <% } %>
+
+    <div class="ww-form-actions" style="margin-top: 1rem;">
+      <button type="submit" class="ww-btn ww-btn-primary">
+        Save Attendance
+      </button>
+
+      <!-- Link back to full attendance history -->
+      <a href="/attendance/history" class="ww-btn ww-btn-secondary">View History</a>
+    </div>
+
+  </form>
+</section>

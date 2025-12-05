@@ -1,0 +1,120 @@
+<main class="ww-main">
+
+  <header class="ww-page-header">
+    <div>
+      <h1>New Event</h1>
+      <p class="ww-subtitle">Create a new ward event.</p>
+    </div>
+
+    <div class="ww-header-actions">
+      <a href="/events/admin" class="ww-btn ww-btn-secondary">
+        ← Back to Events
+      </a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+
+
+    <% if (errors && errors.length) { %>
+      <div class="auth-error">
+        <ul class="ww-list">
+          <% errors.forEach(e => { %>
+            <li><%= e %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <!-- Creates a NEW event Submittes to POST /events/admin, handled by eventController.create() -->
+    <form action="/events/admin" method="POST" class="ww-form">
+
+
+      <div class="ww-form-group">
+        <label for="title">Title<span class="ww-required">*</span></label>
+
+
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value="<%= event.title || '' %>"
+          required
+        />
+      </div>
+
+      <div class="ww-form-group">
+        <label for="description">Description</label>
+
+        <textarea
+          id="description"
+          name="description"
+          rows="3"
+        ><%= event.description || '' %></textarea>
+      </div>
+
+
+      <div class="ww-form-group">
+        <label for="location">Location</label>
+
+        <input
+          type="text"
+          id="location"
+          name="location"
+          value="<%= event.location || '' %>"
+        />
+      </div>
+
+      <!-- Required date -->
+      <div class="ww-form-group">
+        <label for="startDate">Date<span class="ww-required">*</span></label>
+
+        <!-- Controller passes event.startDate, formatted as YYYY-MM-DD if needed -->
+        <input
+          type="date"
+          id="startDate"
+          name="startDate"
+          value="<%= event.startDate || '' %>"
+          required
+        />
+      </div>
+
+      <!-- Optional time string (no strict validation, just a plain input) -->
+      <div class="ww-form-group">
+        <label for="startTime">Time</label>
+
+        <input
+          type="text"
+          id="startTime"
+          name="startTime"
+          placeholder="12:00 pm"
+          value="<%= event.startTime || '' %>"
+        />
+      </div>
+
+      <!-- Recurrence dropdown -->
+      <div class="ww-form-group">
+        <label for="recurrence">Recurrence</label>
+
+        <!--   Select value comes from event.recurrence. -->
+        <select id="recurrence" name="recurrence">
+          <option value="none" <%= event.recurrence === 'none' ? 'selected' : '' %>>None</option>
+          <option value="weekly" <%= event.recurrence === 'weekly' ? 'selected' : '' %>>Weekly</option>
+          <option value="monthly" <%= event.recurrence === 'monthly' ? 'selected' : '' %>>Monthly</option>
+        </select>
+      </div>
+
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">
+          Save Event
+        </button>
+
+        <a href="/events/admin" class="ww-btn ww-btn-secondary">
+          Cancel
+        </a>
+      </div>
+    </form>
+
+  </section>
+
+</main>

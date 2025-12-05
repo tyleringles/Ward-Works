@@ -1,0 +1,50 @@
+<h1>Record Attendance</h1>
+
+<!-- 
+  This form submits attendance data to the POST /attendance route.
+  The attendanceController.save() function handles this request.
+-->
+<form action="/attendance" method="POST">
+
+  <div>
+    <label>Date:</label><br>
+
+    <!-- 
+      This date field corresponds to req.body.date in the controller.
+      Required field ensures the user cannot submit empty.
+    -->
+    <input type="date" name="date" required>
+  </div>
+
+  <h3>Select Members Present:</h3>
+
+  <% 
+    // "members" is passed in by the controller.
+    // It contains an array of Member objects retrieved from MongoDB.
+    // We loop through each member to create a checkbox for them.
+  %>
+  <% members.forEach(m => { %>
+
+    <label>
+      <!-- 
+        Each checkbox sends a value equal to the member's _id.
+        In the controller, req.body.presentMembers tells which members were selected.
+      -->
+      <input 
+        type="checkbox" 
+        name="presentMembers" 
+        value="<%= m._id %>"
+      >
+
+      <!-- Display the member's full name -->
+      <%= m.firstName %> <%= m.lastName %>
+    </label><br>
+
+  <% }) %>
+
+  <br>
+
+  <!-- Submit button triggers POST /attendance -->
+  <button type="submit">Save Attendance</button>
+
+</form>

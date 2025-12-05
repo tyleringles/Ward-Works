@@ -1,0 +1,608 @@
+<!-- views/programs/edit.ejs -->
+<!-- Rendered by programController.edit (GET /programs/:id/edit).
+     Form submits to programController.update (POST /programs/:id/edit). -->
+
+<div class="ww-page">
+  <div class="ww-page-header">
+    <h1>Edit Sacrament Program</h1>
+    <p class="ww-page-subtitle">
+      <strong>Date:</strong> <%= program.date %>
+      <% if (program.theme) { %>
+        &nbsp; | &nbsp; <strong>Theme:</strong> <%= program.theme %>
+      <% } %>
+    </p>
+  </div>
+
+  <form
+    action="/programs/<%= program._id %>/edit"
+    method="POST"
+    class="ww-form ww-card"
+  >
+    <!-- Optional CSRF token if middleware is enabled -->
+    <% if (typeof csrfToken !== 'undefined') { %>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <% } %>
+
+    <!-- Basic header fields map to Program: title, date, theme -->
+    <fieldset class="ww-fieldset">
+      <legend>Meeting Info</legend>
+
+      <div class="ww-field">
+        <label for="title">Program Title</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value="<%= program.title || 'YSA 15th Ward' %>"
+        />
+      </div>
+
+      <div class="ww-field">
+        <label for="date">Date</label>
+        <input
+          type="date"
+          id="date"
+          name="date"
+          value="<%= program.date %>"
+          required
+        />
+      </div>
+
+      <div class="ww-field">
+        <label for="theme">Theme (optional)</label>
+        <input
+          type="text"
+          id="theme"
+          name="theme"
+          value="<%= program.theme || '' %>"
+        />
+      </div>
+    </fieldset>
+
+    <!-- Announcements & business text → announcements, stakeBusiness, wardBusiness, greeter -->
+    <fieldset class="ww-fieldset">
+      <legend>Announcements &amp; Business</legend>
+
+      <div class="ww-field">
+        <label for="announcements">Announcements (public)</label>
+        <textarea
+          id="announcements"
+          name="announcements"
+          rows="5"
+        ><%= program.announcements || '' %></textarea>
+      </div>
+
+      <div class="ww-field">
+        <label for="stakeBusiness">Stake Business</label>
+        <textarea
+          id="stakeBusiness"
+          name="stakeBusiness"
+          rows="3"
+        ><%= program.stakeBusiness || '' %></textarea>
+      </div>
+
+      <div class="ww-field">
+        <label for="wardBusiness">Ward Business</label>
+        <textarea
+          id="wardBusiness"
+          name="wardBusiness"
+          rows="3"
+        ><%= program.wardBusiness || '' %></textarea>
+      </div>
+
+      <div class="ww-field">
+        <label for="greeter">Greeter Line</label>
+        <input
+          type="text"
+          id="greeter"
+          name="greeter"
+          value="<%= program.greeter || '' %>"
+        />
+      </div>
+    </fieldset>
+
+    <!-- Leadership & prayers → presiding, conducting, chorister, organist, openingPrayer, closingPrayer -->
+    <fieldset class="ww-fieldset">
+      <legend>Leadership &amp; Prayers</legend>
+
+      <div class="ww-grid ww-grid-2">
+        <div class="ww-field">
+          <label for="presiding">Presiding</label>
+          <select id="presiding" name="presiding">
+            <option value="">-- Select member --</option>
+            <% members.forEach(m => { %>
+              <option
+                value="<%= m._id %>"
+                <%= (program.presiding && String(program.presiding._id) === String(m._id)) ? 'selected' : '' %>
+              >
+                <%= m.firstName %> <%= m.lastName %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="ww-field">
+          <label for="conducting">Conducting</label>
+          <select id="conducting" name="conducting">
+            <option value="">-- Select member --</option>
+            <% members.forEach(m => { %>
+              <option
+                value="<%= m._id %>"
+                <%= (program.conducting && String(program.conducting._id) === String(m._id)) ? 'selected' : '' %>
+              >
+                <%= m.firstName %> <%= m.lastName %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="ww-field">
+          <label for="organist">Organist</label>
+          <select id="organist" name="organist">
+            <option value="">-- Select member --</option>
+            <% members.forEach(m => { %>
+              <option
+                value="<%= m._id %>"
+                <%= (program.organist && String(program.organist._id) === String(m._id)) ? 'selected' : '' %>
+              >
+                <%= m.firstName %> <%= m.lastName %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="ww-field">
+          <label for="chorister">Chorister</label>
+          <select id="chorister" name="chorister">
+            <option value="">-- Select member --</option>
+            <% members.forEach(m => { %>
+              <option
+                value="<%= m._id %>"
+                <%= (program.chorister && String(program.chorister._id) === String(m._id)) ? 'selected' : '' %>
+              >
+                <%= m.firstName %> <%= m.lastName %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="ww-field">
+          <label for="openingPrayer">Invocation (Opening Prayer)</label>
+          <select id="openingPrayer" name="openingPrayer">
+            <option value="">-- Select member --</option>
+            <% members.forEach(m => { %>
+              <option
+                value="<%= m._id %>"
+                <%= (program.openingPrayer && String(program.openingPrayer._id) === String(m._id)) ? 'selected' : '' %>
+              >
+                <%= m.firstName %> <%= m.lastName %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="ww-field">
+          <label for="closingPrayer">Benediction (Closing Prayer)</label>
+          <select id="closingPrayer" name="closingPrayer">
+            <option value="">-- Select member --</option>
+            <% members.forEach(m => { %>
+              <option
+                value="<%= m._id %>"
+                <%= (program.closingPrayer && String(program.closingPrayer._id) === String(m._id)) ? 'selected' : '' %>
+              >
+                <%= m.firstName %> <%= m.lastName %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Hymns fields → converted to hymn objects by programController.update (buildHymn) -->
+    <fieldset class="ww-fieldset">
+      <legend>Hymns</legend>
+
+      <div class="ww-grid ww-grid-2">
+        <div class="ww-field">
+          <label>Opening Hymn</label>
+
+          <!-- Dropdown fed from hymns list -->
+          <select id="openingHymnSelect" class="ww-hymn-select">
+            <option value="">-- Select hymn --</option>
+            <% hymns.forEach(function(h) { %>
+              <option
+                value="<%= h.number %>"
+                data-title="<%= h.title %>"
+                <%= (program.openingHymn && String(program.openingHymn.number) === String(h.number)) ? 'selected' : '' %>
+              >
+                <%= h.number %> — <%= h.title %>
+              </option>
+            <% }) %>
+          </select>
+
+          <!-- Actual posted fields -->
+          <div class="ww-inline-fields" style="margin-top: 0.5rem;">
+            <input
+              type="text"
+              id="openingHymnNumber"
+              name="openingHymnNumber"
+              placeholder="#"
+              class="ww-input-small"
+              value="<%= program.openingHymn && program.openingHymn.number ? program.openingHymn.number : '' %>"
+            />
+            <input
+              type="text"
+              id="openingHymnTitle"
+              name="openingHymnTitle"
+              placeholder="Title"
+              value="<%= program.openingHymn && program.openingHymn.title ? program.openingHymn.title : '' %>"
+            />
+          </div>
+        </div>
+
+        <div class="ww-field">
+          <label>Sacrament Hymn</label>
+
+          <select id="sacramentHymnSelect" class="ww-hymn-select">
+            <option value="">-- Select hymn --</option>
+            <% hymns.forEach(function(h) { %>
+              <option
+                value="<%= h.number %>"
+                data-title="<%= h.title %>"
+                <%= (program.sacramentHymn && String(program.sacramentHymn.number) === String(h.number)) ? 'selected' : '' %>
+              >
+                <%= h.number %> — <%= h.title %>
+              </option>
+            <% }) %>
+          </select>
+
+          <div class="ww-inline-fields" style="margin-top: 0.5rem;">
+            <input
+              type="text"
+              id="sacramentHymnNumber"
+              name="sacramentHymnNumber"
+              placeholder="#"
+              class="ww-input-small"
+              value="<%= program.sacramentHymn && program.sacramentHymn.number ? program.sacramentHymn.number : '' %>"
+            />
+            <input
+              type="text"
+              id="sacramentHymnTitle"
+              name="sacramentHymnTitle"
+              placeholder="Title"
+              value="<%= program.sacramentHymn && program.sacramentHymn.title ? program.sacramentHymn.title : '' %>"
+            />
+          </div>
+        </div>
+
+        <div class="ww-field">
+          <label>Intermediate Hymn (optional)</label>
+
+          <select id="intermediateHymnSelect" class="ww-hymn-select">
+            <option value="">-- Select hymn --</option>
+            <% hymns.forEach(function(h) { %>
+              <option
+                value="<%= h.number %>"
+                data-title="<%= h.title %>"
+                <%= (program.intermediateHymn && String(program.intermediateHymn.number) === String(h.number)) ? 'selected' : '' %>
+              >
+                <%= h.number %> — <%= h.title %>
+              </option>
+            <% }) %>
+          </select>
+
+          <div class="ww-inline-fields" style="margin-top: 0.5rem;">
+            <input
+              type="text"
+              id="intermediateHymnNumber"
+              name="intermediateHymnNumber"
+              placeholder="#"
+              class="ww-input-small"
+              value="<%= program.intermediateHymn && program.intermediateHymn.number ? program.intermediateHymn.number : '' %>"
+            />
+            <input
+              type="text"
+              id="intermediateHymnTitle"
+              name="intermediateHymnTitle"
+              placeholder="Title"
+              value="<%= program.intermediateHymn && program.intermediateHymn.title ? program.intermediateHymn.title : '' %>"
+            />
+          </div>
+        </div>
+
+        <div class="ww-field">
+          <label>Closing Hymn</label>
+
+          <select id="closingHymnSelect" class="ww-hymn-select">
+            <option value="">-- Select hymn --</option>
+            <% hymns.forEach(function(h) { %>
+              <option
+                value="<%= h.number %>"
+                data-title="<%= h.title %>"
+                <%= (program.closingHymn && String(program.closingHymn.number) === String(h.number)) ? 'selected' : '' %>
+              >
+                <%= h.number %> — <%= h.title %>
+              </option>
+            <% }) %>
+          </select>
+
+          <div class="ww-inline-fields" style="margin-top: 0.5rem;">
+            <input
+              type="text"
+              id="closingHymnNumber"
+              name="closingHymnNumber"
+              placeholder="#"
+              class="ww-input-small"
+              value="<%= program.closingHymn && program.closingHymn.number ? program.closingHymn.number : '' %>"
+            />
+            <input
+              type="text"
+              id="closingHymnTitle"
+              name="closingHymnTitle"
+              placeholder="Title"
+              value="<%= program.closingHymn && program.closingHymn.title ? program.closingHymn.title : '' %>"
+            />
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Speakers map to speakers[] in Program via array field names -->
+    <fieldset class="ww-fieldset">
+      <legend>Speakers</legend>
+
+      <div id="speakers-container">
+        <% if (program.speakers && program.speakers.length > 0) { %>
+          <% program.speakers.forEach(function(s, index) { %>
+            <div class="speaker-row ww-card ww-card-soft">
+              <div class="ww-grid ww-grid-4">
+                <div class="ww-field">
+                  <label>Speaker (from directory)</label>
+                  <select name="speakersMember[]" class="speaker-member-select">
+                    <option value="">-- Select member --</option>
+                    <% members.forEach(function(m) { %>
+                      <option
+                        value="<%= m._id %>"
+                        <%= (s.member && String(s.member._id || s.member) === String(m._id)) ? 'selected' : '' %>
+                      >
+                        <%= m.firstName %> <%= m.lastName %>
+                      </option>
+                    <% }) %>
+                  </select>
+                </div>
+
+                <div class="ww-field">
+                  <label>Other Name (if not in directory)</label>
+                  <input
+                    type="text"
+                    name="speakersOtherName[]"
+                    value="<%= s.otherName || '' %>"
+                  />
+                </div>
+
+                <div class="ww-field">
+                  <label>Topic (optional)</label>
+                  <input
+                    type="text"
+                    name="speakersTopic[]"
+                    value="<%= s.topic || '' %>"
+                  />
+                </div>
+
+                <div class="ww-field">
+                  <label>Order</label>
+                  <input
+                    type="number"
+                    name="speakersOrder[]"
+                    value="<%= s.order || (index + 1) %>"
+                    class="ww-input-small"
+                  />
+                </div>
+              </div>
+
+              <button type="button" class="ww-button ww-button-secondary speaker-remove-btn">
+                Remove Speaker
+              </button>
+            </div>
+          <% }); %>
+        <% } %>
+
+        <!-- Template row used by JS when adding more speakers -->
+        <div
+          class="speaker-row ww-card ww-card-soft speaker-template"
+          style="display: <%= (program.speakers && program.speakers.length > 0) ? 'none' : 'block' %>;"
+        >
+          <div class="ww-grid ww-grid-4">
+            <div class="ww-field">
+              <label>Speaker (from directory)</label>
+              <select name="speakersMember[]" class="speaker-member-select">
+                <option value="">-- Select member --</option>
+                <% members.forEach(function(m) { %>
+                  <option value="<%= m._id %>">
+                    <%= m.firstName %> <%= m.lastName %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="ww-field">
+              <label>Other Name (if not in directory)</label>
+              <input
+                type="text"
+                name="speakersOtherName[]"
+                value=""
+              />
+            </div>
+
+            <div class="ww-field">
+              <label>Topic (optional)</label>
+              <input
+                type="text"
+                name="speakersTopic[]"
+                value=""
+              />
+            </div>
+
+            <div class="ww-field">
+              <label>Order</label>
+              <input
+                type="number"
+                name="speakersOrder[]"
+                value=""
+                class="ww-input-small"
+              />
+            </div>
+          </div>
+
+          <button type="button" class="ww-button ww-button-secondary speaker-remove-btn">
+            Remove Speaker
+          </button>
+        </div>
+      </div>
+
+      <button type="button" id="add-speaker-btn" class="ww-button ww-button-outline">
+        + Add Speaker
+      </button>
+    </fieldset>
+
+    <!-- Fast Sunday + second hour fields → includeBearingOfTestimonies, secondHourType, secondHourOtherText -->
+    <fieldset class="ww-fieldset">
+      <legend>Fast Sunday &amp; Second Hour</legend>
+
+      <div class="ww-field">
+        <label>
+          <input
+            type="checkbox"
+            name="includeBearingOfTestimonies"
+            value="true"
+            <%= program.includeBearingOfTestimonies ? 'checked' : '' %>
+          />
+          Include "Bearing of Testimonies" line (Fast Sunday)
+        </label>
+      </div>
+
+      <div class="ww-grid ww-grid-2">
+        <div class="ww-field">
+          <label for="secondHourType">2nd Hour Type</label>
+          <select id="secondHourType" name="secondHourType">
+            <option value="Sunday School" <%= program.secondHourType === 'Sunday School' ? 'selected' : '' %>>
+              Sunday School
+            </option>
+            <option value="Relief Society and Elder Quorum" <%= program.secondHourType === 'Relief Society and Elder Quorum' ? 'selected' : '' %>>
+              Relief Society and Elder Quorum
+            </option>
+            <option value="Other" <%= program.secondHourType === 'Other' ? 'selected' : '' %>>
+              Other
+            </option>
+          </select>
+        </div>
+
+        <div
+          class="ww-field"
+          id="second-hour-other-wrapper"
+          style="<%= program.secondHourType === 'Other' ? '' : 'display:none;' %>"
+        >
+          <label for="secondHourOtherText">2nd Hour (Other description)</label>
+          <input
+            type="text"
+            id="secondHourOtherText"
+            name="secondHourOtherText"
+            value="<%= program.secondHourOtherText || '' %>"
+          />
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="ww-form-actions">
+      <a href="/programs/<%= program._id %>" class="ww-button ww-button-secondary">
+        Cancel
+      </a>
+      <button type="submit" class="ww-button ww-button-primary">
+        Save Changes
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Simple page JS to support this form (no server calls) -->
+<script>
+  (function () {
+    // Toggle "Other" 2nd hour text field
+    var secondHourTypeSelect = document.getElementById('secondHourType');
+    var secondHourOtherWrapper = document.getElementById('second-hour-other-wrapper');
+
+    if (secondHourTypeSelect) {
+      secondHourTypeSelect.addEventListener('change', function () {
+        if (this.value === 'Other') {
+          secondHourOtherWrapper.style.display = '';
+        } else {
+          secondHourOtherWrapper.style.display = 'none';
+        }
+      });
+    }
+
+    // Speakers dynamic rows (keeps array field names used in programController.update)
+    var speakersContainer = document.getElementById('speakers-container');
+    var addSpeakerBtn = document.getElementById('add-speaker-btn');
+
+    if (!speakersContainer || !addSpeakerBtn) return;
+
+    var templateRow = speakersContainer.querySelector('.speaker-template');
+
+    function attachRemoveHandler(row) {
+      var btn = row.querySelector('.speaker-remove-btn');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          row.parentNode.removeChild(row);
+        });
+      }
+    }
+
+    var existingRows = speakersContainer.querySelectorAll('.speaker-row');
+    existingRows.forEach(function (row) {
+      attachRemoveHandler(row);
+    });
+
+    addSpeakerBtn.addEventListener('click', function () {
+      if (!templateRow) return;
+
+      var clone = templateRow.cloneNode(true);
+      clone.style.display = 'block';
+      clone.classList.remove('speaker-template');
+
+      var inputs = clone.querySelectorAll('input, select');
+      inputs.forEach(function (el) {
+        if (el.tagName.toLowerCase() === 'select') {
+          el.selectedIndex = 0;
+        } else {
+          el.value = '';
+        }
+      });
+
+      attachRemoveHandler(clone);
+      speakersContainer.appendChild(clone);
+    });
+
+    // Hymn selects → fill number + title inputs
+    function wireHymnSelect(selectId, numberInputId, titleInputId) {
+      var select = document.getElementById(selectId);
+      var numberInput = document.getElementById(numberInputId);
+      var titleInput = document.getElementById(titleInputId);
+
+      if (!select || !numberInput || !titleInput) return;
+
+      select.addEventListener('change', function () {
+        var opt = select.options[select.selectedIndex];
+        var num = opt.value || '';
+        var title = opt.getAttribute('data-title') || '';
+        numberInput.value = num;
+        if (title) titleInput.value = title;
+      });
+    }
+
+    wireHymnSelect('openingHymnSelect', 'openingHymnNumber', 'openingHymnTitle');
+    wireHymnSelect('sacramentHymnSelect', 'sacramentHymnNumber', 'sacramentHymnTitle');
+    wireHymnSelect('intermediateHymnSelect', 'intermediateHymnNumber', 'intermediateHymnTitle');
+    wireHymnSelect('closingHymnSelect', 'closingHymnNumber', 'closingHymnTitle');
+  })();
+</script>

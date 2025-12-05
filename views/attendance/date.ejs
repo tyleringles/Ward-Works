@@ -1,0 +1,93 @@
+<section class="ww-page-header">
+  <h1>Attendance – <%= date %></h1>
+  <p>Who was present on this date.</p>
+</section>
+
+<section class="ww-card">
+
+  <% 
+    // "records" is passed in by attendanceController.dateView (or similar).
+    // If no attendance records exist for the selected date, show a simple message.
+  %>
+  <% if (!records || records.length === 0) { %>
+    <p>No attendance records found for this date.</p>
+
+  <% } else { %>
+
+    <table class="ww-table">
+      <thead>
+        <tr>
+          <th>Present</th>
+          <th>Member</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <% 
+          // Loop over each attendance record.
+          // Each "rec" object comes from MongoDB and includes:
+          //  - rec.present (boolean)
+          //  - rec.member (populated Member document)
+        %>
+        <% records.forEach(rec => { %>
+
+          <tr>
+
+            <!-- Display checkmark or X based on present field -->
+            <td>
+              <% if (rec.present) { %>
+                ✅
+              <% } else { %>
+                ❌
+              <% } %>
+            </td>
+
+            <td>
+              <% 
+                // If the record has a populated member, show the member's name.
+                // This works because the controller used .populate('member').
+              %>
+              <% if (rec.member) { %>
+                <%= rec.member.firstName %> <%= rec.member.lastName %>
+              <% } else { %>
+                (Unknown Member)
+              <% } %>
+            </td>
+
+            <td>
+              <% 
+                // Show either email or phone if available.
+                // This comes from the Member schema fields.
+              %>
+              <% if (rec.member && rec.member.email) { %>
+
+                <%= rec.member.email %>
+
+              <% } else if (rec.member && rec.member.phone) { %>
+
+                <%= rec.member.phone %>
+
+              <% } else { %>
+
+                —
+
+              <% } %>
+            </td>
+
+          </tr>
+
+        <% }) %>
+
+      </tbody>
+    </table>
+
+  <% } %>
+
+</section>
+
+<!-- Simple route back to attendance history (GET /attendance/history) -->
+<p>
+  <a href="/attendance/history" class="ww-card-link">← Back to history</a>
+</p>

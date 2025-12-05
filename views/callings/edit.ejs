@@ -1,0 +1,118 @@
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>Edit Calling</h1>
+      <p class="ww-subtitle">Update this calling and its assignment.</p>
+    </div>
+
+    <div class="ww-header-actions">
+      <a href="/callings" class="ww-btn ww-btn-secondary">← Back to Callings</a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+
+    <% 
+      // "errors" comes from callingController.update()
+      // If validation fails (title too short, notes too long, etc.)
+      // the controller re-renders this page with an array of error messages.
+    %>
+    <% if (errors && errors.length) { %>
+      <div class="ww-error">
+        <strong>Please fix the following:</strong>
+        <ul>
+          <% errors.forEach(function(err) { %>
+            <li><%= err %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <!-- 
+      This form is how the calling is updated.
+uses POST to update it 
+    -->
+    <form
+      action="/callings/<%= calling._id %>?_method=PUT"
+      method="POST"
+      class="ww-form"
+    >
+
+     
+      <div class="ww-form-group">
+        <label for="title">Calling Title<span class="ww-required">*</span></label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          required
+          value="<%= calling.title %>"
+        />
+      </div>
+
+   
+      <div class="ww-form-group">
+        <label for="organization">Organization<span class="ww-required">*</span></label>
+        <input
+          type="text"
+          id="organization"
+          name="organization"
+          required
+          value="<%= calling.organization %>"
+        />
+      </div>
+
+
+      <div class="ww-form-group">
+        <label for="member">Assigned Member (optional)</label>
+        <select id="member" name="member">
+          <option value="">-- Unassigned --</option>
+
+          <% 
+            // Build <option> for each Member in the ward
+            // If calling.member equals this member’s ID, pre-select it
+          %>
+          <% members.forEach(m => { %>
+            <option
+              value="<%= m._id %>"
+              <%= calling.member && String(calling.member) === String(m._id) ? 'selected' : '' %>
+            >
+              <%= m.lastName %>, <%= m.firstName %>
+            </option>
+          <% }); %>
+        </select>
+      </div>
+
+      <div class="ww-form-group">
+        <label for="notes">Notes (optional)</label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows="3"
+        ><%= calling.notes || '' %></textarea>
+      </div>
+
+      <!-- 
+        if they cilck it then the
+        callingController.update() converts that into Boolean
+      -->
+      <div class="ww-form-group">
+        <label>
+          <input
+            type="checkbox"
+            name="active"
+            <%= calling.active ? 'checked' : '' %>
+          />
+          Active calling
+        </label>
+      </div>
+
+     
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">Save Changes</button>
+        <a href="/callings" class="ww-btn ww-btn-secondary">Cancel</a>
+      </div>
+    </form>
+
+  </section>
+</main>

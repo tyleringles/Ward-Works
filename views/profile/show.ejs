@@ -1,0 +1,59 @@
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>My Profile</h1>
+      <p class="ww-subtitle">
+        View your account details.
+      </p>
+    </div>
+  </header>
+
+  <section class="ww-card">
+    <h2>Account</h2>
+
+    <!-- 
+      "user" is provided by profileController.showProfile()
+      It comes from req.user (set during login by your auth system)
+    -->
+    <dl class="ww-detail-list">
+      <div class="ww-detail-row">
+        <dt>Email</dt>
+        <!-- Display logged-in user email -->
+        <dd><%= user && user.email ? user.email : '—' %></dd>
+      </div>
+
+      <div class="ww-detail-row">
+        <dt>Role</dt>
+        <!-- Shows role: "member" or "admin" -->
+        <dd><%= user && user.role ? user.role : '—' %></dd>
+      </div>
+
+      <div class="ww-detail-row">
+        <dt>User ID (debug)</dt>
+        <!-- 
+          Useful for debugging auth; shows Mongo _id 
+          Comes directly from req.user populated by auth middleware
+        -->
+        <dd><%= user && user._id ? user._id.toString() : '—' %></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="ww-card" style="margin-top: 1rem;">
+    <h2>Ward Directory Info</h2>
+
+    <!--
+      This page currently does NOT pull a Member record.
+      Later you can update profileController.showProfile()
+      to populate:
+         const member = await Member.findById(user.member)
+      and pass it to this view.
+    -->
+
+    <p>
+      This simple version doesn’t load your member record yet.
+      Once we confirm the page wiring works, we’ll hook this up
+      to your Member profile (name, gender, phone, photo, calling, etc.).
+    </p>
+  </section>
+</main>

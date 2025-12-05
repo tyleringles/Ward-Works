@@ -1,0 +1,86 @@
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>My Attendance Check-In</h1>
+      <p class="ww-subtitle">
+        Record your own attendance for today.
+      </p>
+    </div>
+
+    <div class="ww-header-actions">
+      <a href="/attendance" class="ww-btn ww-btn-secondary">
+        ← Back to Take Attendance
+      </a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+    <p>
+      <strong>Member:</strong>
+      <%= member.firstName %> <%= member.lastName %><br/>
+      <strong>Date:</strong> <%= selectedDate %>
+    </p>
+
+    <form method="POST" action="/attendance/checkin" class="ww-form">
+      <div class="ww-form-group">
+        <label>Which meeting are you attending today?</label>
+
+        <label>
+          <input
+            type="radio"
+            name="meetingType"
+            value="elder_quorum"
+            <%= record && record.meetingType === 'elder_quorum' ? 'checked' : '' %>
+          />
+          Elders Quorum
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="meetingType"
+            value="relief_society"
+            <%= record && record.meetingType === 'relief_society' ? 'checked' : '' %>
+          />
+          Relief Society
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="meetingType"
+            value="sunday_school"
+            <%= record && record.meetingType === 'sunday_school' ? 'checked' : '' %>
+          />
+          Sunday School
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="meetingType"
+            value="other"
+            <%= !record || record.meetingType === 'other' ? 'checked' : '' %>
+          />
+          Other
+        </label>
+      </div>
+
+      <div class="ww-form-group">
+        <label for="notes">Notes (optional)</label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows="3"
+          placeholder="Any details you want to add..."
+        ><%= record && record.notes ? record.notes : '' %></textarea>
+      </div>
+
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">
+          Check In
+        </button>
+      </div>
+    </form>
+  </section>
+</main>

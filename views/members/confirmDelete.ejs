@@ -1,0 +1,20 @@
+<!--The controller that renders this page passes in: { member: { _id, firstName, lastName, ... } -->
+
+<h1>Delete Member</h1>
+
+
+<p>
+  Are you sure you want to delete 
+  <strong><%= member.firstName %> <%= member.lastName %></strong>?
+</p>
+
+
+<form 
+  action="/members/<%= member._id %>?_method=DELETE" 
+  method="POST" 
+  style="display:inline"
+>
+  <button type="submit">Yes, delete</button>
+</form>
+
+<a href="/members" style="margin-left:8px;">Cancel</a>

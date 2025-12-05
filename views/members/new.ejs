@@ -1,0 +1,138 @@
+<main class="ww-main">
+
+  <!-- Static header -->
+  <section class="ww-page-header">
+    <h1>New Member</h1>
+    <p>Add a new ward member to the directory.</p>
+  </section>
+
+  <section class="ww-card">
+
+    <!-- 
+      If the controller passed validation errors (memberController.create),
+      they appear here.
+    -->
+    <% if (errors && errors.length) { %>
+      <div class="ww-error">
+        <strong>Please fix the following:</strong>
+        <ul>
+          <% errors.forEach(function(err) { %>
+            <li><%= err %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <!-- 
+      Form posts to:
+        POST /members
+      → handled by memberController.create
+      which:
+        - validates form
+        - saves Member to MongoDB
+        - handles photo upload if included
+    -->
+    <form 
+      action="/members" 
+      method="POST" 
+      class="ww-form"
+      enctype="multipart/form-data"  <!-- required for uploading photos -->
+    >
+
+      <!-- First Name (required input used by create() controller) -->
+      <div class="ww-form-group">
+        <label for="firstName">First Name<span class="ww-required">*</span></label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          required
+          value="<%= formData && formData.firstName ? formData.firstName : '' %>"
+        />
+      </div>
+
+      <!-- Last Name (required, same logic as above) -->
+      <div class="ww-form-group">
+        <label for="lastName">Last Name<span class="ww-required">*</span></label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          required
+          value="<%= formData && formData.lastName ? formData.lastName : '' %>"
+        />
+      </div>
+
+      <!-- Email field (optional) -->
+      <div class="ww-form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="name@example.com"
+          value="<%= formData && formData.email ? formData.email : '' %>"
+        />
+      </div>
+
+      <!-- Phone field (optional) -->
+      <div class="ww-form-group">
+        <label for="phone">Phone</label>
+        <input
+          type="text"
+          id="phone"
+          name="phone"
+          placeholder="555-123-4567"
+          value="<%= formData && formData.phone ? formData.phone : '' %>"
+        />
+      </div>
+
+      <!-- 
+        Gender dropdown.
+        Default = 'unknown'
+        This value is read and saved by memberController.create
+      -->
+      <div class="ww-form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender">
+          <% const g = (formData && formData.gender) ? formData.gender : 'unknown'; %>
+          <option value="unknown" <%= g === 'unknown' ? 'selected' : '' %>>
+            Prefer not to say
+          </option>
+          <option value="male" <%= g === 'male' ? 'selected' : '' %>>
+            Male
+          </option>
+          <option value="female" <%= g === 'female' ? 'selected' : '' %>>
+            Female
+          </option>
+          <option value="other" <%= g === 'other' ? 'selected' : '' %>>
+            Other
+          </option>
+        </select>
+      </div>
+
+      <!-- 
+        Photo file upload.
+        Multer handles this in memberController.create
+      -->
+      <div class="ww-form-group">
+        <label for="photo">Profile Photo</label>
+        <input 
+          type="file" 
+          id="photo" 
+          name="photo" 
+          accept="image/*"
+        />
+      </div>
+
+      <!-- Submit + Cancel links -->
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">Save Member</button>
+
+        <!-- Simply returns to GET /members -->
+        <a href="/members" class="ww-btn ww-btn-secondary">Cancel</a>
+      </div>
+
+    </form>
+  </section>
+</main>

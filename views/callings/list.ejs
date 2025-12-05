@@ -1,0 +1,96 @@
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>Callings</h1>
+      <p class="ww-subtitle">View and manage ward callings and assignments.</p>
+    </div>
+
+    <div class="ww-header-actions">
+      <!-- 
+         callingController
+        the Route is GET /callings/new
+      -->
+      <a href="/callings/new" class="ww-btn ww-btn-primary">+ New Calling</a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+
+    <% 
+      // "callings" comes from callingController.list()
+      // The controller populates calling.member so we can show names here.
+    %>
+
+    <% if (!callings || callings.length === 0) { %>
+      <p>No callings have been created yet. Click "New Calling" to add one.</p>
+    <% } else { %>
+
+      <table class="ww-table">
+        <thead>
+          <tr>
+            <th>Calling</th>
+            <th>Organization</th>
+            <th>Assigned To</th>
+            <th>Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% callings.forEach(calling => { %>
+            <tr>
+              <!-- Display calling title and org from Calling model -->
+              <td><%= calling.title %></td>
+              <td><%= calling.organization %></td>
+
+              <td>
+                <% 
+                  // If a member is assigned, the controller populated calling.member
+                %>
+                <% if (calling.member) { %>
+                  <%= calling.member.lastName %>, <%= calling.member.firstName %>
+                <% } else { %>
+                  <span style="color:#9ca3af;">Unassigned</span>
+                <% } %>
+              </td>
+
+              <td>
+                <% if (calling.active) { %>
+                  <span style="color:#15803d; font-weight:500;">Active</span>
+                <% } else { %>
+                  <span style="color:#9ca3af;">Inactive</span>
+                <% } %>
+              </td>
+
+              <td>
+                <!-- editing is handled by callingController.showEdit()the Route being GET /callings/:id/edit-->
+                <a href="/callings/<%= calling._id %>/edit" class="ww-card-link">Edit</a>
+
+                &nbsp;|&nbsp;
+
+                <!-- callingController.delete() handles the removal-->
+                <form 
+                  action="/callings/<%= calling._id %>?_method=DELETE"
+                  method="POST"
+                  style="display:inline;"
+                  onsubmit="return confirm('Delete this calling?');"
+                >
+                  <button 
+                    type="submit" 
+                    class="ww-card-link" 
+                    style="background:none; border:none; padding:0; cursor:pointer; color:#b91c1c;"
+                  >
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+
+      </table>
+
+    <% } %>
+
+  </section>
+</main>

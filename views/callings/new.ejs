@@ -1,0 +1,106 @@
+<main class="ww-main">
+
+  <section class="ww-page-header">
+    <h1>New Calling</h1>
+    <p class="ww-subtitle">Create a new calling and optionally assign it to a member.</p>
+  </section>
+
+  <section class="ww-card">
+
+    <% 
+      // "errors" and "formData" come from callingController.create()
+      // when validation fails. Errors are shown above the form.
+    %>
+
+    <% if (errors && errors.length) { %>
+      <div class="ww-error">
+        <strong>Please fix the following:</strong>
+        <ul>
+          <% errors.forEach(function (err) { %>
+            <li><%= err %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <!--  callingController.create()this  validate input, then saves it to the db or gives error -->
+    <form action="/callings" method="POST" class="ww-form">
+
+   
+      <div class="ww-form-group">
+        <label for="title">Calling Title<span class="ww-required">*</span></label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          required
+          placeholder="Elders Quorum President"
+          <!-- formData.title preserved on validation error -->
+          value="<%= formData && formData.title ? formData.title : '' %>"
+        />
+      </div>
+
+    
+      <div class="ww-form-group">
+        <label for="organization">Organization<span class="ww-required">*</span></label>
+        <input
+          type="text"
+          id="organization"
+          name="organization"
+          required
+          placeholder="Elders Quorum"
+          value="<%= formData && formData.organization ? formData.organization : '' %>"
+        />
+      </div>
+
+      <!-- “formData.memberId” preserves selection if validation fails -->
+      <div class="ww-form-group">
+        <label for="member">Assigned Member (optional)</label>
+        <select id="member" name="member">
+          <option value="">-- Unassigned --</option>
+
+          <% members.forEach(m => { %>
+            <option
+              value="<%= m._id %>"
+              <%= formData && formData.memberId === String(m._id) ? 'selected' : '' %>
+            >
+              <%= m.lastName %>, <%= m.firstName %>
+            </option>
+          <% }); %>
+        </select>
+      </div>
+
+      <div class="ww-form-group">
+        <label for="notes">Notes (optional)</label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows="3"
+          placeholder="Any helpful notes about this calling or responsibilities..."
+        ><%= formData && formData.notes ? formData.notes : '' %></textarea>
+      </div>
+
+      <!-- Active checkbox If no validation errors yet → defaults to checked 
+      -->
+      <div class="ww-form-group">
+        <label>
+          <input
+            type="checkbox"
+            name="active"
+            <%= !formData || formData.active ? 'checked' : '' %>
+          />
+          Active calling
+        </label>
+      </div>
+
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">Save Calling</button>
+
+        <!-- Cancels then goes back to list (GET /callings) -->
+        <a href="/callings" class="ww-btn ww-btn-secondary">Cancel</a>
+      </div>
+
+    </form>
+
+  </section>
+</main>

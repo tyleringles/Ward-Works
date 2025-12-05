@@ -1,0 +1,257 @@
+<!-- views/programs/show.ejs -->
+<!-- Rendered by programController.show (GET /programs/:id).
+     Expects: program (populated Program doc), currentUser (from session). -->
+
+<div class="ww-page">
+  <!-- Page header with title + actions -->
+  <div class="ww-page-header ww-page-header-actions">
+    <div>
+      <h1>Sacrament Meeting Program</h1>
+      <p class="ww-page-subtitle">
+        <strong><%= program.title || 'YSA 15th Ward' %></strong>
+        <% if (program.date) { %>
+          &nbsp;•&nbsp; <%= program.date %>
+        <% } %>
+        <% if (program.theme) { %>
+          <br />
+          <span class="ww-text-muted">Theme: <%= program.theme %></span>
+        <% } %>
+      </p>
+    </div>
+
+    <div class="ww-page-actions">
+      <!-- Back to list: GET /programs → programController.list -->
+      <a href="/programs" class="ww-button ww-button-secondary">
+        ← All Programs
+      </a>
+
+      <!-- Member-facing PDF: GET /programs/:id/pdf → programController.downloadPdf -->
+      <a href="/programs/<%= program._id %>/pdf" class="ww-button ww-button-outline">
+        View Printable PDF
+      </a>
+
+      <!-- Admin-only actions use role from currentUser set in res.locals -->
+      <% if (currentUser && currentUser.role === 'admin') { %>
+        <!-- Admin PDF: GET /programs/:id/admin-pdf → programController.downloadAdminPdf -->
+        <a href="/programs/<%= program._id %>/admin-pdf" class="ww-button ww-button-outline">
+          Admin PDF
+        </a>
+
+        <!-- Edit form: GET /programs/:id/edit → programController.edit -->
+        <a href="/programs/<%= program._id %>/edit" class="ww-button ww-button-primary">
+          Edit Program
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Main program content card -->
+  <section class="ww-card ww-program-view">
+    <!-- Announcements (program.announcements from DB) -->
+    <% if (program.announcements && program.announcements.trim() !== '') { %>
+      <section class="ww-program-section">
+        <h2>Announcements</h2>
+        <p class="ww-multiline">
+          <%= program.announcements %>
+        </p>
+      </section>
+    <% } %>
+
+    <!-- Stake & Ward Business -->
+    <% if (
+      (program.stakeBusiness && program.stakeBusiness.trim() !== '') ||
+      (program.wardBusiness && program.wardBusiness.trim() !== '')
+    ) { %>
+      <section class="ww-program-section">
+        <h2>Stake &amp; Ward Business</h2>
+
+        <% if (program.stakeBusiness && program.stakeBusiness.trim() !== '') { %>
+          <h3>Stake Business</h3>
+          <p class="ww-multiline">
+            <%= program.stakeBusiness %>
+          </p>
+        <% } %>
+
+        <% if (program.wardBusiness && program.wardBusiness.trim() !== '') { %>
+          <h3>Ward Business</h3>
+          <p class="ww-multiline">
+            <%= program.wardBusiness %>
+          </p>
+        <% } %>
+      </section>
+    <% } %>
+
+    <!-- Greeter -->
+    <% if (program.greeter && program.greeter.trim() !== '') { %>
+      <section class="ww-program-section">
+        <h2>Greeter</h2>
+        <p><%= program.greeter %></p>
+      </section>
+    <% } %>
+
+    <!-- Leadership block: uses populated Member refs (presiding, conducting, etc.) -->
+    <section class="ww-program-section">
+      <h2>Presiding &amp; Conducting</h2>
+      <ul class="ww-program-list-compact">
+        <li>
+          <strong>Presiding:</strong>
+          <% if (program.presiding) { %>
+            <%= program.presiding.firstName %> <%= program.presiding.lastName %>
+          <% } else { %>
+            <span class="ww-text-muted">Not assigned</span>
+          <% } %>
+        </li>
+        <li>
+          <strong>Conducting:</strong>
+          <% if (program.conducting) { %>
+            <%= program.conducting.firstName %> <%= program.conducting.lastName %>
+          <% } else { %>
+            <span class="ww-text-muted">Not assigned</span>
+          <% } %>
+        </li>
+        <li>
+          <strong>Organist:</strong>
+          <% if (program.organist) { %>
+            <%= program.organist.firstName %> <%= program.organist.lastName %>
+          <% } else { %>
+            <span class="ww-text-muted">Not assigned</span>
+          <% } %>
+        </li>
+        <li>
+          <strong>Chorister:</strong>
+          <% if (program.chorister) { %>
+            <%= program.chorister.firstName %> <%= program.chorister.lastName %>
+          <% } else { %>
+            <span class="ww-text-muted">Not assigned</span>
+          <% } %>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Opening section -->
+    <section class="ww-program-section">
+      <h2>Opening</h2>
+      <ul class="ww-program-list-compact">
+        <li>
+          <strong>Opening Hymn:</strong>
+          <% if (program.openingHymn && program.openingHymn.number && program.openingHymn.title) { %>
+            #<%= program.openingHymn.number %> – <%= program.openingHymn.title %>
+          <% } else { %>
+            <span class="ww-text-muted">Not set</span>
+          <% } %>
+        </li>
+        <li>
+          <strong>Invocation:</strong>
+          <% if (program.openingPrayer) { %>
+            <%= program.openingPrayer.firstName %> <%= program.openingPrayer.lastName %>
+          <% } else { %>
+            <span class="ww-text-muted">Not assigned</span>
+          <% } %>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Sacrament section -->
+    <section class="ww-program-section">
+      <h2>Sacrament</h2>
+      <ul class="ww-program-list-compact">
+        <li>
+          <strong>Sacrament Hymn:</strong>
+          <% if (program.sacramentHymn && program.sacramentHymn.number && program.sacramentHymn.title) { %>
+            #<%= program.sacramentHymn.number %> – <%= program.sacramentHymn.title %>
+          <% } else { %>
+            <span class="ww-text-muted">Not set</span>
+          <% } %>
+        </li>
+        <li>
+          <strong>Administration of the Sacrament</strong>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Speakers + Intermediate Hymn + Bearing of Testimonies -->
+    <section class="ww-program-section">
+      <h2>Speakers</h2>
+
+      <% if (program.speakers && program.speakers.length > 0) { %>
+        <ul class="ww-program-list-compact">
+          <% 
+            const speakersSorted = [...program.speakers].sort(
+              (a, b) => (a.order || 0) - (b.order || 0)
+            );
+          %>
+          <% speakersSorted.forEach(function(s, idx) { %>
+            <li>
+              <% 
+                const name =
+                  (s.otherName && s.otherName.trim() !== '')
+                    ? s.otherName
+                    : (s.member
+                        ? (s.member.firstName + ' ' + s.member.lastName)
+                        : `Speaker ${idx + 1}`);
+              %>
+              <strong><%= name %></strong>
+              <% if (s.topic && s.topic.trim() !== '') { %>
+                – <span><%= s.topic %></span>
+              <% } %>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p class="ww-text-muted">Speakers not set.</p>
+      <% } %>
+
+      <!-- Intermediate Hymn, if present -->
+      <% if (program.intermediateHymn && program.intermediateHymn.number && program.intermediateHymn.title) { %>
+        <div class="ww-program-subsection">
+          <strong>Intermediate Hymn:</strong>
+          #<%= program.intermediateHymn.number %> – <%= program.intermediateHymn.title %>
+        </div>
+      <% } %>
+
+      <!-- Bearing of Testimonies -->
+      <% if (program.includeBearingOfTestimonies) { %>
+        <div class="ww-program-subsection">
+          <strong>Bearing of Testimonies</strong>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Closing section -->
+    <section class="ww-program-section">
+      <h2>Closing</h2>
+      <ul class="ww-program-list-compact">
+        <li>
+          <strong>Closing Hymn:</strong>
+          <% if (program.closingHymn && program.closingHymn.number && program.closingHymn.title) { %>
+            #<%= program.closingHymn.number %> – <%= program.closingHymn.title %>
+          <% } else { %>
+            <span class="ww-text-muted">Not set</span>
+          <% } %>
+        </li>
+        <li>
+          <strong>Benediction:</strong>
+          <% if (program.closingPrayer) { %>
+            <%= program.closingPrayer.firstName %> <%= program.closingPrayer.lastName %>
+          <% } else { %>
+            <span class="ww-text-muted">Not assigned</span>
+          <% } %>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Second Hour (secondHourType / secondHourOtherText from Program model) -->
+    <section class="ww-program-section">
+      <h2>2nd Hour of Church</h2>
+      <p>
+        <% if (program.secondHourType === 'Other' && program.secondHourOtherText) { %>
+          <%= program.secondHourOtherText %>
+        <% } else if (program.secondHourType) { %>
+          <%= program.secondHourType %>
+        <% } else { %>
+          <span class="ww-text-muted">Not set</span>
+        <% } %>
+      </p>
+    </section>
+  </section>
+</div>

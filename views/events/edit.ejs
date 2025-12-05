@@ -1,0 +1,133 @@
+<!--
+  events/edit.ejs
+  ---------------------------------------------------------
+  This form lets an admin edit an existing event.
+
+  Data supplied by eventController.showEdit():
+     • event → the Event document being edited
+     • errors → optional array of validation errors
+     
+  When submitted, it sends:
+     PUT /events/admin/:id
+  handled by eventController.update()
+-->
+
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>Edit Event</h1>
+      <p class="ww-subtitle">Update this ward event.</p>
+    </div>
+
+    <!-- Back link for navigation (no logic) -->
+    <div class="ww-header-actions">
+      <a href="/events/admin" class="ww-btn ww-btn-secondary">
+        ← Back to Events
+      </a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+
+    <% if (errors && errors.length) { %>
+      <!-- If validation failed in eventController.update(),
+           the controller sends back an array of error messages -->
+      <div class="auth-error">
+        <ul class="ww-list">
+          <% errors.forEach(e => { %>
+            <li><%= e %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <!--
+      The form uses method override via ?_method=PUT
+      so Express treats this POST as a PUT request.
+    -->
+    <form
+      action="/events/admin/<%= event._id %>?_method=PUT"
+      method="POST"
+      class="ww-form"
+    >
+
+      <!-- Event title (required) -->
+      <div class="ww-form-group">
+        <label for="title">Title<span class="ww-required">*</span></label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value="<%= event.title || '' %>"
+          required
+        />
+      </div>
+
+      <!-- Description is optional -->
+      <div class="ww-form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          rows="3"
+        ><%= event.description || '' %></textarea>
+      </div>
+
+      <!-- Optional location -->
+      <div class="ww-form-group">
+        <label for="location">Location</label>
+        <input
+          type="text"
+          id="location"
+          name="location"
+          value="<%= event.location || '' %>"
+        />
+      </div>
+
+      <!--
+        Date field: the controller formats event.startDate as "YYYY-MM-DD"
+        and exposes it as event.startDateInput so the HTML date picker works.
+      -->
+      <div class="ww-form-group">
+        <label for="startDate">Date<span class="ww-required">*</span></label>
+        <input
+          type="date"
+          id="startDate"
+          name="startDate"
+          value="<%= event.startDateInput || '' %>"
+          required
+        />
+      </div>
+
+      <!-- Optional time stored as simple text (e.g. "7:00 PM") -->
+      <div class="ww-form-group">
+        <label for="startTime">Time</label>
+        <input
+          type="text"
+          id="startTime"
+          name="startTime"
+          value="<%= event.startTime || '' %>"
+        />
+      </div>
+
+      <!-- Recurrence dropdown mirrors Event model enum -->
+      <div class="ww-form-group">
+        <label for="recurrence">Recurrence</label>
+        <select id="recurrence" name="recurrence">
+          <option value="none"    <%= event.recurrence === 'none'    ? 'selected' : '' %>>None</option>
+          <option value="weekly"  <%= event.recurrence === 'weekly'  ? 'selected' : '' %>>Weekly</option>
+          <option value="monthly" <%= event.recurrence === 'monthly' ? 'selected' : '' %>>Monthly</option>
+        </select>
+      </div>
+
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">
+          Save Changes
+        </button>
+        <a href="/events/admin" class="ww-btn ww-btn-secondary">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </section>
+</main>

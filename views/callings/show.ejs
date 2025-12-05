@@ -1,0 +1,61 @@
+
+
+<section class="ww-page-header">
+  <!-- calling.name & calling.organization come from MongoDB record -->
+  <h1><%= calling.name %></h1>
+  <p>
+    Organization:
+    <strong><%= calling.organization || 'Not specified' %></strong>
+  </p>
+</section>
+
+<section class="ww-card">
+  <h2>Assigned Members</h2>
+
+  <% 
+    // calling.members is populated in the controller using:
+    // Calling.findById(id).populate('members')
+  %>
+
+  <% if (!calling.members || calling.members.length === 0) { %>
+    <p>No members have been assigned to this calling yet.</p>
+
+  <% } else { %>
+    <ul class="ww-list">
+      <% calling.members.forEach(member => { %>
+        <li>
+          <strong><%= member.firstName %> <%= member.lastName %></strong>
+          <% if (member.email) { %> – <%= member.email %><% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>
+
+
+<% if (currentUser && currentUser.role === 'admin') { %>
+  <section class="ww-card">
+    <h2>Assign Member</h2>
+
+    <form action="/callings/<%= calling._id %>/assign" method="POST" class="ww-form-inline">
+      <div class="ww-form-group">
+
+        <label for="memberId">Select Member</label>
+        <select id="memberId" name="memberId" required>
+          <option value="">-- Choose a member --</option>
+          <% members.forEach(member => { %>
+            <option value="<%= member._id %>">
+              <%= member.lastName %>, <%= member.firstName %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <button type="submit" class="ww-btn ww-btn-primary">Assign to Calling</button>
+    </form>
+  </section>
+<% } %>
+
+<p>
+  <a href="/callings" class="ww-card-link">← Back to all callings</a>
+</p>

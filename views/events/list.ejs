@@ -1,0 +1,187 @@
+<!--
+  events/list.ejs
+  ---------------------------------------------------------------
+  PUBLIC EVENT CALENDAR PAGE
+
+  Data provided by eventController.publicList():
+      • calendar → an object containing:
+          - year, month, monthName
+          - prev / next month navigation data
+          - weeks[][] → a matrix of days, each day containing:
+              { day, dateObj, events: [...] }
+
+  This view renders:
+      1. Month navigation links → /events?year=YYYY&month=MM
+      2. A full monthly calendar grid
+      3. A list of upcoming events (flat list)
+-->
+
+<main class="ww-main">
+
+  <!-- Header + admin-only "Manage Events" button -->
+  <header class="ww-page-header">
+    <div>
+      <h1>Events</h1>
+      <p class="ww-subtitle">
+        Ward calendar showing sacrament meetings, FHE, activities, and more.
+      </p>
+    </div>
+
+    <div class="ww-header-actions">
+      <!-- If the controller tells us the user is logged in *and* an admin,
+           show link to the admin event manager (/events/admin). -->
+      <% if (isAuthenticated && currentUser && currentUser.role === 'admin') { %>
+        <a href="/events/admin" class="ww-btn ww-btn-secondary">
+          Manage Events
+        </a>
+      <% } %>
+    </div>
+  </header>
+
+  <section class="ww-card">
+
+    <!-- MONTH NAVIGATION built by the controller -->
+    <div class="ww-cal-header">
+
+      <!-- Link to previous month (controller pre-builds calendar.prev.year/month) -->
+      <a
+        class="ww-cal-nav"
+        href="/events?year=<%= calendar.prev.year %>&month=<%= calendar.prev.month %>"
+      >
+        ←
+      </a>
+
+      <!-- Current month title (e.g., "January 2025") -->
+      <h2 class="ww-cal-title">
+        <%= calendar.monthName %> <%= calendar.year %>
+      </h2>
+
+      <!-- Link to next month -->
+      <a
+        class="ww-cal-nav"
+        href="/events?year=<%= calendar.next.year %>&month=<%= calendar.next.month %>"
+      >
+        →
+      </a>
+    </div>
+
+    <!-- MONTHLY CALENDAR GRID -->
+    <table class="ww-calendar">
+      <thead>
+        <tr>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+          <th>Sunday</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% 
+          // calendar.weeks is a 2D array (6 rows × 7 columns)
+          // Each cell is either:
+          //    null  → blank square
+          // OR a day object:
+          //    { day, events: [...] }
+        %>
+
+        <% calendar.weeks.forEach(week => { %>
+          <tr>
+
+            <% week.forEach(day => { %>
+
+              <% if (!day) { %>
+                <!-- Empty cell (leading/trailing days of the month) -->
+                <td class="ww-cal-day ww-cal-day-empty"></td>
+
+              <% } else { %>
+                <!-- Calendar day -->
+                <td class="ww-cal-day">
+                  
+                  <!-- Numeric day value -->
+                  <div class="ww-cal-day-number"><%= day.day %></div>
+
+                  <!-- If events exist on this day, list them -->
+                  <% if (day.events && day.events.length > 0) { %>
+                    <ul class="ww-cal-events">
+
+                      <% day.events.forEach(e => { %>
+                        <li class="ww-cal-event">
+                          <div class="ww-cal-event-title"><%= e.title %></div>
+
+                          <div class="ww-cal-event-meta">
+                            <!-- Time (optional) -->
+                            <% if (e.startTime) { %>
+                              <%= e.startTime %>
+                            <% } %>
+
+                            <!-- Location (optional, with separator if needed) -->
+                            <% if (e.location) { %>
+                              <% if (e.startTime) { %> · <% } %>
+                              <%= e.location %>
+                            <% } %>
+                          </div>
+                        </li>
+                      <% }) %>
+
+                    </ul>
+                  <% } %>
+
+                </td>
+              <% } %>
+
+            <% }); %>
+
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- UPCOMING EVENTS LIST (flat list for accessibility and quick scanning) -->
+  <section class="ww-card" style="margin-top: 1rem;">
+    <h2>Upcoming Events (List)</h2>
+
+    <% 
+      // Build a flat list of all days that contain events
+      const flatDays = [];
+      calendar.weeks.forEach(w =>
+        w.forEach(d => {
+          if (d && d.events && d.events.length) flatDays.push(d);
+        })
+      );
+    %>
+
+    <% if (!flatDays.length) { %>
+      <p>No events have been added for this month yet.</p>
+    
+    <% } else { %>
+      <ul class="ww-list">
+
+        <% flatDays.forEach(d => {
+             d.events.forEach(e => { %>
+
+          <li>
+            <strong><%= e.title %></strong>
+            — <%= new Date(e.startDate).toLocaleDateString() %>
+
+            <% if (e.startTime) { %>
+              · <%= e.startTime %>
+            <% } %>
+
+            <% if (e.location) { %>
+              · <%= e.location %>
+            <% } %>
+          </li>
+
+        <% }); }); %>
+
+      </ul>
+    <% } %>
+
+  </section>
+
+</main>

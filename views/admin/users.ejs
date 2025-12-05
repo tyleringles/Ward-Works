@@ -1,0 +1,107 @@
+<section class="ww-page-header">
+  <h1>Manage Users &amp; Roles</h1>
+  <p>Promote or demote users between member and admin.</p>
+</section>
+
+<section class="ww-card">
+
+  <% 
+    // The controller passes an array called "users".
+    // If there are no users in the database, show a simple message.
+  %>
+  <% if (users.length === 0) { %>
+    <p>No users found.</p>
+
+  <% } else { %>
+
+    <table class="ww-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name (Member)</th>
+          <th>Current Role</th>
+          <th>Change Role</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <% 
+          // Loop through all users.
+          // This data comes from adminController.userList(),
+          // which populated the "member" reference and sorted results.
+        %>
+        <% users.forEach(user => { %>
+
+          <tr>
+
+            <!-- Display the user's login email -->
+            <td><%= user.email %></td>
+
+            <td>
+              <% 
+                // If this user is linked to a Member record,
+                // show the member's full name.
+                // Otherwise, show a placeholder dash.
+              %>
+              <% if (user.member) { %>
+                <%= user.member.firstName %> <%= user.member.lastName %>
+              <% } else { %>
+                —
+              <% } %>
+            </td>
+
+            <!-- Show the user's current account role -->
+            <td><%= user.role %></td>
+
+            <td>
+              <% 
+                // Form submits to POST /admin/users/:id/role
+                // This route is handled by adminController.updateUserRole().
+                // The <select> field lets the admin choose a new role.
+              %>
+              <form 
+                action="/admin/users/<%= user._id %>/role" 
+                method="POST" 
+                class="ww-form-inline"
+              >
+
+                <!-- Role dropdown, pre-selecting the user's current role -->
+                <select name="role">
+                  <option 
+                    value="member" 
+                    <%= user.role === 'member' ? 'selected' : '' %>
+                  >
+                    member
+                  </option>
+
+                  <option 
+                    value="admin" 
+                    <%= user.role === 'admin' ? 'selected' : '' %>
+                  >
+                    admin
+                  </option>
+                </select>
+
+                <!-- Submit button triggers the role update -->
+                <button 
+                  type="submit" 
+                  class="ww-btn ww-btn-secondary" 
+                  style="margin-left: 0.5rem;"
+                >
+                  Update
+                </button>
+
+              </form>
+            </td>
+
+          </tr>
+
+        <% }) %>
+
+      </tbody>
+    </table>
+
+  <% } %>
+
+</section>

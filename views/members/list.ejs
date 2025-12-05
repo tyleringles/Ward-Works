@@ -1,0 +1,116 @@
+<main class="ww-main">
+
+  <header class="ww-page-header">
+    <div>
+      <h1>Ward Directory</h1>
+      <p class="ww-subtitle">View and manage members in the ward.</p>
+    </div>
+
+    <div class="ww-header-actions">
+      <a href="/members/new" class="ww-btn ww-btn-primary">+ New Member</a>
+    </div>
+  </header>
+
+
+  <section class="ww-card">
+    <form class="ww-form-inline" method="GET" action="/members">
+
+      <!-- Search field (filled from req.query.q) -->
+      <div class="ww-form-group">
+        <label for="q">Search</label>
+        <input
+          type="text"
+          id="q"
+          name="q"
+          value="<%= (query && query.q) || '' %>"
+          placeholder="Search by name, email, phone..."
+        />
+      </div>
+
+      <!-- Sort dropdown (value comes from req.query.sort) -->
+      <div class="ww-form-group">
+        <label for="sort">Sort</label>
+        <select id="sort" name="sort">
+          <option value="" <%= !query.sort ? 'selected' : '' %>>Last name (A–Z)</option>
+          <option value="last_desc" <%= query.sort === 'last_desc' ? 'selected' : '' %>>Last name (Z–A)</option>
+          <option value="first_asc" <%= query.sort === 'first_asc' ? 'selected' : '' %>>First name (A–Z)</option>
+          <option value="first_desc" <%= query.sort === 'first_desc' ? 'selected' : '' %>>First name (Z–A)</option>
+        </select>
+      </div>
+
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">Apply</button>
+        <!-- Reset simply links to GET /members with no query -->
+        <a href="/members" class="ww-btn ww-btn-secondary">Reset</a>
+      </div>
+    </form>
+  </section>
+
+  <
+  <section class="ww-card" style="margin-top: 1rem;">
+    <% if (!members || members.length === 0) { %>
+
+      <p>No members found. Try adjusting your search or add a new member.</p>
+
+    <% } else { %>
+
+      <table class="ww-table">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- Loop through each member record -->
+          <% members.forEach(member => { %>
+            <tr>
+
+              <!-- Member photo + link to member detail page -->
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <% if (member.photo) { %>
+                    <img
+                      src="<%= member.photo %>"
+                      alt="Profile photo of <%= member.firstName %> <%= member.lastName %>"
+                      style="width: 40px; height: 40px; border-radius: 999px; object-fit: cover;"
+                    />
+                  <% } %>
+
+                  <!-- Links to GET /members/:id (memberController.show) -->
+                  <a href="/members/<%= member._id %>" class="ww-card-link">
+                    <%= member.lastName %>, <%= member.firstName %>
+                  </a>
+                </div>
+              </td>
+
+              <!-- Contact fields (may be blank) -->
+              <td><%= member.email || '—' %></td>
+              <td><%= member.phone || '—' %></td>
+              <td><%= member.gender || 'unknown' %></td>
+
+              <!-- 
+                Action links:
+                - Edit → GET /members/:id/edit (memberController.showEdit)
+                - View → GET /members/:id (memberController.show)
+              -->
+              <td>
+                <a href="/members/<%= member._id %>/edit" class="ww-card-link">Edit</a>
+                &nbsp;|&nbsp;
+                <a href="/members/<%= member._id %>" class="ww-card-link">View</a>
+              </td>
+
+            </tr>
+          <% }); %>
+
+        </tbody>
+      </table>
+
+    <% } %>
+  </section>
+</main>

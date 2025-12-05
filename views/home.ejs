@@ -1,0 +1,130 @@
+
+<section class="ww-hero ww-hero-banner">
+  <div class="ww-hero-overlay">
+    <div class="ww-hero-banner-inner">
+
+      <!-- Left: ward text + actions -->
+      <div class="ww-hero-banner-text">
+        <div class="ww-hero-ward-title">15th YSA Ward · Logan 2nd Stake</div>
+
+        <h1 class="ww-hero-ward-heading">ALL ARE WELCOME</h1>
+
+        <p class="ww-hero-meeting">
+          We meet <strong>12:00 pm</strong> at the
+          <strong>Aztec building</strong> in the
+          <strong>South Chapel</strong>, located at
+          <strong>1295 N 800 E, Logan, UT 84341</strong>.
+        </p>
+
+        <p class="ww-hero-tagline">
+          A place to worship, connect, and serve together.
+        </p>
+
+        <div class="ww-hero-actions">
+          <a href="/auth/login" class="ww-button ww-button-primary">
+            Leader Login
+          </a>
+          <a href="/auth/signup" class="ww-button ww-button-secondary">
+            Join Ward Directory
+          </a>
+        </div>
+
+        <p class="ww-hero-powered">
+          Powered by Ward Works — tools for leaders &amp; members to manage
+          the ward directory, callings, attendance, and events.
+        </p>
+      </div>
+
+      <!-- Right: upcoming events card -->
+      <div class="ww-hero-banner-events">
+        <div class="ww-card">
+          <h2 class="ww-hero-events-heading">Upcoming Ward Events</h2>
+
+          <% if (events && events.length > 0) { %>
+            <ul class="ww-list">
+              <% events.forEach(e => { %>
+                <li>
+                  <strong><%= e.title %></strong>
+                  <div style="font-size: 0.85rem; color: #f9fafb;">
+                    <%= new Date(e.startDate).toLocaleDateString() %>
+                    <% if (e.startTime) { %> · <%= e.startTime %><% } %>
+                    <% if (e.location) { %> · <%= e.location %><% } %>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+
+            <a href="/events" class="ww-card-link">
+              View full calendar →
+            </a>
+          <% } else { %>
+            <p class="ww-hero-events-empty">
+              No upcoming events have been added yet.
+            </p>
+            <a href="/events" class="ww-card-link">
+              View calendar →
+            </a>
+          <% } %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Scripture of the Day -->
+<% if (scripture) { %>
+  <section class="ww-card scripture-card">
+    <h2 class="scripture-title">Scripture of the Day</h2>
+    <p class="scripture-text">
+      “<%= scripture.text %>”
+    </p>
+    <p class="scripture-ref"><%= scripture.reference %></p>
+  </section>
+<% } %>
+
+<!-- What Ward Works Helps You Do -->
+<section class="ww-section">
+  <div class="ww-section-header">
+    <h2>What Ward Works Helps You Do</h2>
+    <p>Tools for leaders and members to stay organized and connected.</p>
+  </div>
+
+  <div class="ww-feature-grid">
+    <article class="ww-card ww-feature-card">
+      <h3>Member Directory</h3>
+      <p>
+        Keep an up-to-date list of ward members with contact info, gender,
+        and basic details. Search and sort the directory in seconds.
+      </p>
+      <a href="/members" class="ww-card-link">Open directory →</a>
+    </article>
+
+    <article class="ww-card ww-feature-card">
+      <h3>Callings &amp; Organizations</h3>
+      <p>
+        See who serves in each calling and organization. Leaders can
+        create new callings and assign members to roles.
+      </p>
+      <a href="/callings" class="ww-card-link">View callings →</a>
+    </article>
+
+    <article class="ww-card ww-feature-card">
+      <h3>Attendance Tracking</h3>
+      <p>
+        Record attendance for Sundays or activities, review past dates,
+        and see who was present or absent by organization.
+      </p>
+      <a href="/attendance" class="ww-card-link">Track attendance →</a>
+    </article>
+
+    <article class="ww-card ww-feature-card">
+      <h3>Ward Calendar</h3>
+      <p>
+        Create recurring events like sacrament meeting or FHE, and keep
+        everyone in the ward up to date on what’s coming next.
+      </p>
+      <a href="/events" class="ww-card-link">Go to calendar →</a>
+    </article>
+  </div>
+</section>

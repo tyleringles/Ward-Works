@@ -1,0 +1,155 @@
+<main class="ww-main">
+  <header class="ww-page-header">
+    <div>
+      <h1>Take Attendance</h1>
+      <p class="ww-subtitle">
+        Mark who was present for a given date. You can sort by gender, first name, or last name.
+      </p>
+    </div>
+
+    <div class="ww-header-actions">
+      <!-- These buttons link to other attendance routes defined in routes/attendance.js -->
+      <a href="/attendance/history" class="ww-btn ww-btn-secondary">
+        View History
+      </a>
+      <a href="/attendance/checkin" class="ww-btn ww-btn-secondary">
+        My Check-In
+      </a>
+    </div>
+  </header>
+
+  <section class="ww-card">
+    <!-- 
+      This form sends a GET request back to /attendance 
+      so the controller can reload the page with:
+      - a different date
+      - a different sort order
+      The controller reads:
+         req.query.date
+         req.query.sort
+    -->
+    <form method="GET" action="/attendance" class="ww-form-inline">
+
+      <div class="ww-form-group">
+        <label for="date">Date</label>
+        <!-- selectedDate is supplied by attendanceController.showTake() -->
+        <input
+          type="date"
+          id="date"
+          name="date"
+          value="<%= selectedDate %>"
+        />
+      </div>
+
+      <div class="ww-form-group">
+        <label for="sort">Sort By</label>
+
+        <!-- sort comes from req.query.sort and is echoed back to keep the dropdown state -->
+        <select id="sort" name="sort">
+          <option value="last"  <%= sort === 'last'  ? 'selected' : '' %>>Last Name</option>
+          <option value="first" <%= sort === 'first' ? 'selected' : '' %>>First Name</option>
+          <option value="gender"<%= sort === 'gender'? 'selected' : '' %>>Gender (then name)</option>
+        </select>
+      </div>
+
+      <div class="ww-form-actions">
+        <button type="submit" class="ww-btn ww-btn-primary">
+          Load
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="ww-card" style="margin-top: 1rem;">
+    <% if (!members || members.length === 0) { %>
+      <p>No members found. Add members first before taking attendance.</p>
+
+    <% } else { %>
+
+      <!-- 
+        This POST form saves attendance.
+        It sends form data to POST /attendance,
+        which is handled by attendanceController.save().
+      -->
+      <form method="POST" action="/attendance" class="ww-form">
+
+        <!-- keep date consistent during POST -->
+        <input type="hidden" name="date" value="<%= selectedDate %>" />
+
+        <table class="ww-table">
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Gender</th>
+              <th>Present?</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% 
+              // Loop through members (loaded by controller)
+              members.forEach(member => { 
+                // existing is a Map created by the controller mapping memberId → existing attendance record
+                const rec = existing.get(String(member._id)) || {};
+            %>
+
+              <tr>
+                <!-- 
+                  Hidden field: sends each member's ID so the controller knows 
+                  who to apply attendance to.
+                  Controller reads req.body.memberIds (array)
+                -->
+                <input type="hidden" name="memberIds" value="<%= member._id %>" />
+
+                <td>
+                  <!-- Link to individual member history page -->
+                  <a href="/attendance/member/<%= member._id %>" class="ww-card-link">
+                    <%= member.lastName %>, <%= member.firstName %>
+                  </a>
+                </td>
+
+                <td><%= member.gender || 'unknown' %></td>
+
+                <td>
+                  <!-- 
+                    Checkbox name encodes the member ID:
+                    present_<memberId>
+                    Controller checks if this key exists to mark them present.
+                  -->
+                  <input
+                    type="checkbox"
+                    name="present_<%= member._id %>"
+                    <%= rec.present ? 'checked' : '' %>
+                  />
+                </td>
+
+                <td>
+                  <!-- 
+                    Notes field corresponding to this member.
+                    Controller reads:
+                      req.body['notes_<memberId>']
+                  -->
+                  <input
+                    type="text"
+                    name="notes_<%= member._id %>"
+                    value="<%= rec.notes || '' %>"
+                    placeholder="Optional notes"
+                    style="width: 100%; max-width: 260px;"
+                  />
+                </td>
+              </tr>
+
+            <% }); %>
+          </tbody>
+        </table>
+
+        <div class="ww-form-actions" style="margin-top: 1rem;">
+          <button type="submit" class="ww-btn ww-btn-primary">
+            Save Attendance
+          </button>
+        </div>
+      </form>
+    <% } %>
+  </section>
+</main>

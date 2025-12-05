@@ -1,0 +1,82 @@
+<!-- views/programs/index.ejs -->
+<!-- Rendered by programController.list (GET /programs).
+     Expects: programs (array of Program docs), currentUser (for admin check). -->
+
+<section class="ww-card ww-card-narrow">
+  <h1>Sacrament Meeting Programs</h1>
+
+  <p class="ww-text-muted">
+    View recent and upcoming sacrament meeting programs.
+  </p>
+
+  <% if (currentUser && currentUser.role === 'admin') { %>
+    <!-- POST /programs/new → programController.create (then redirects to /programs/:id/edit) -->
+    <form
+      action="/programs/new"
+      method="POST"
+      class="ww-program-create-form"
+      style="margin: 1rem 0;"
+    >
+      <button type="submit" class="ww-button ww-button-primary">
+        + Create New Program
+      </button>
+    </form>
+  <% } %>
+
+  <% if (!programs || programs.length === 0) { %>
+    <p class="ww-text-muted">
+      No programs have been created yet.
+    </p>
+  <% } else { %>
+    <!-- Each list item links to GET /programs/:id → programController.show -->
+    <ul class="ww-program-list">
+      <% programs.forEach(program => { %>
+        <li class="ww-program-item">
+          <a href="/programs/<%= program._id %>" class="ww-program-link">
+            <div class="ww-program-main">
+              <div class="ww-program-date">
+                <strong><%= program.date %></strong>
+              </div>
+              <div class="ww-program-info">
+                <% if (program.theme) { %>
+                  <div class="ww-program-theme">
+                    Theme: <span><%= program.theme %></span>
+                  </div>
+                <% } else { %>
+                  <div class="ww-program-theme ww-text-muted">
+                    No theme set
+                  </div>
+                <% } %>
+
+                <div class="ww-program-presiding">
+                  <% if (program.presiding || program.conducting) { %>
+                    <span class="ww-text-muted">
+                      <% if (program.presiding) { %>
+                        Presiding:
+                        <strong>
+                          <%= program.presiding.firstName %> <%= program.presiding.lastName %>
+                        </strong>
+                      <% } %>
+                      <% if (program.presiding && program.conducting) { %> • <% } %>
+                      <% if (program.conducting) { %>
+                        Conducting:
+                        <strong>
+                          <%= program.conducting.firstName %> <%= program.conducting.lastName %>
+                        </strong>
+                      <% } %>
+                    </span>
+                  <% } else { %>
+                    <span class="ww-text-muted">
+                      Presiding / conducting not assigned
+                    </span>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <div class="ww-program-arrow">&rarr;</div>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>

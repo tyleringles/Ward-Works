@@ -1,0 +1,168 @@
+<!-- views/profile/profile.ejs -->
+
+<section class="ww-card ww-card-narrow">
+  <h1>My Profile</h1>
+
+  <!-- "member" comes from profileController.showProfile.
+       If the logged-in user is linked to a Member record, show their name. -->
+  <% if (member) { %>
+    <p class="ww-text-muted">
+      Linked member record:
+      <strong><%= member.firstName %> <%= member.lastName %></strong>
+    </p>
+  <% } %>
+
+  <!-- BASIC INFO + AVATAR FORM -->
+  <!-- POST /profile handled by profileController.updateProfile -->
+  <!-- enctype so Multer can process avatar uploads -->
+  <form action="/profile" method="POST" enctype="multipart/form-data" class="ww-form">
+
+    <!-- Avatar preview row -->
+    <!-- If member.photo exists, show it; otherwise show initial. -->
+    <div class="ww-form-row ww-avatar-row">
+      <% if (member && member.photo) { %>
+        <img
+          src="<%= member.photo %>"
+          alt="<%= member.firstName || user.email %>"
+          class="ww-avatar-img"
+        />
+      <% } else { %>
+        <div class="ww-avatar-placeholder">
+          <!-- Placeholder initial comes from member name or user.email -->
+          <%= (member && member.firstName
+                ? member.firstName[0]
+                : (user.email && user.email[0] ? user.email[0] : 'U')
+              ).toUpperCase() %>
+        </div>
+      <% } %>
+
+      <!-- File upload input processed by Multer in profileController -->
+      <label class="ww-field">
+        <span>Profile Photo</span>
+        <input type="file" name="avatar" accept="image/*" />
+        <div class="ww-text-muted">
+          JPG or PNG. If you upload a new photo, it will replace the current one.
+        </div>
+      </label>
+    </div>
+
+    <!-- Basic info fields populated from Member record -->
+    <div class="ww-form-row">
+      <label class="ww-field">
+        <span>First Name</span>
+        <input
+          type="text"
+          name="firstName"
+          value="<%= member ? member.firstName : '' %>"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="ww-form-row">
+      <label class="ww-field">
+        <span>Last Name</span>
+        <input
+          type="text"
+          name="lastName"
+          value="<%= member ? member.lastName : '' %>"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="ww-form-row">
+      <label class="ww-field">
+        <span>Email</span>
+        <!-- If no member.email yet, default to user.email from auth -->
+        <input
+          type="email"
+          name="email"
+          value="<%= member ? member.email : (user ? user.email : '') %>"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="ww-form-row">
+      <label class="ww-field">
+        <span>Phone</span>
+        <input
+          type="text"
+          name="phone"
+          value="<%= member ? member.phone : '' %>"
+        />
+      </label>
+    </div>
+
+    <!-- Submits updates to profileController.updateProfile -->
+    <div class="ww-form-actions">
+      <button type="submit" class="ww-btn-primary">
+        Save Profile
+      </button>
+    </div>
+
+  </form>
+</section>
+
+<!-- CHANGE PASSWORD SECTION -->
+<section class="ww-card ww-card-narrow">
+  <h2>Change Password</h2>
+
+  <!-- Messages above the password form come from profileController.updatePassword -->
+  <% if (passwordError) { %>
+    <div class="ww-alert ww-alert-error">
+      <%= passwordError %>
+    </div>
+  <% } %>
+
+  <% if (passwordSuccess) { %>
+    <div class="ww-alert ww-alert-success">
+      <%= passwordSuccess %>
+    </div>
+  <% } %>
+
+  <!-- POST /profile/password handled by profileController.updatePassword -->
+  <form action="/profile/password" method="POST" class="ww-form">
+
+    <div class="ww-form-row">
+      <label class="ww-field">
+        <span>Current Password</span>
+        <input
+          type="password"
+          name="currentPassword"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="ww-form-row">
+      <label class="ww-field">
+        <span>New Password</span>
+        <input
+          type="password"
+          name="newPassword"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="ww-form-row">
+      <label class="ww-field">
+        <span>Confirm New Password</span>
+        <input
+          type="password"
+          name="confirmNewPassword"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="ww-form-actions">
+      <button type="submit" class="ww-btn-secondary">
+        Update Password
+      </button>
+    </div>
+
+  </form>
+</section>

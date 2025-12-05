@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= title || 'Ward Works' %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <!-- Top header + nav -->
+  <header class="ww-header">
+    <div class="ww-header-inner">
+
+      <!-- Logo -->
+      <a href="/" class="ww-logo">
+        <img src="/images/ward-logo.png" alt="Ward Logo" class="ww-logo-img" />
+      </a>
+
+      <!-- Mobile nav toggle -->
+      <button
+        class="ww-nav-toggle"
+        type="button"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+        aria-controls="ww-nav-drawer"
+      >
+        <span class="ww-nav-toggle-line"></span>
+        <span class="ww-nav-toggle-line"></span>
+        <span class="ww-nav-toggle-line"></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Slide-out / dropdown navigation -->
+  <nav id="ww-nav-drawer" class="ww-nav-drawer" aria-hidden="true">
+    <ul class="ww-nav-list">
+
+      <!-- Home -->
+      <li class="ww-nav-item">
+        <a href="/" class="ww-nav-link">Home</a>
+      </li>
+
+      <!-- Directory group -->
+      <li class="ww-nav-item ww-nav-group">
+        <button
+          class="ww-nav-group-toggle"
+          type="button"
+          data-target="ww-nav-directory"
+          aria-expanded="false"
+        >
+          <span>Directory</span>
+          <span class="ww-nav-arrow">▾</span>
+        </button>
+        <ul id="ww-nav-directory" class="ww-nav-sublist">
+          <li>
+            <a href="/members" class="ww-nav-link-sub">Member Directory</a>
+          </li>
+          <li>
+            <a href="/callings" class="ww-nav-link-sub">Callings</a>
+          </li>
+          <li>
+            <a href="/attendance" class="ww-nav-link-sub">Attendance</a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Church Info group -->
+      <li class="ww-nav-item ww-nav-group">
+        <button
+          class="ww-nav-group-toggle"
+          type="button"
+          data-target="ww-nav-church"
+          aria-expanded="false"
+        >
+          <span>Church Info</span>
+          <span class="ww-nav-arrow">▾</span>
+        </button>
+        <ul id="ww-nav-church" class="ww-nav-sublist">
+          <li>
+            <a href="/church-info" class="ww-nav-link-sub">Church Info</a>
+          </li>
+          <li>
+            <a href="/events" class="ww-nav-link-sub">Calendar</a>
+          </li>
+          <li>
+            <a href="/programs" class="ww-nav-link-sub">Sacrament Program</a>
+          </li>
+        </ul>
+      </li>
+
+      <% if (isAuthenticated) { %>
+
+        <% if (currentUser && currentUser.role === 'admin') { %>
+          <li class="ww-nav-item">
+            <a href="/admin/users" class="ww-nav-link">Admin</a>
+          </li>
+        <% } %>
+
+        <li class="ww-nav-item">
+          <a href="/profile" class="ww-nav-link">
+            Hi, <%= currentUser && currentUser.email ? currentUser.email : 'Leader' %>
+          </a>
+        </li>
+
+        <li class="ww-nav-item ww-nav-item-logout">
+          <form action="/auth/logout" method="POST" class="ww-nav-logout-form">
+            <button type="submit" class="ww-nav-link ww-nav-link-button">
+              Logout
+            </button>
+          </form>
+        </li>
+
+      <% } else { %>
+
+        <li class="ww-nav-item">
+          <a href="/auth/login" class="ww-nav-link">Login</a>
+        </li>
+        <li class="ww-nav-item">
+          <a href="/auth/signup" class="ww-nav-link ww-nav-link-accent">
+            Join Ward
+          </a>
+        </li>
+
+      <% } %>
+
+    </ul>
+  </nav>
+
+  <!-- Main page content -->
+  <main class="ww-main">
+    <%- body %>
+  </main>
+
+  <!-- Footer -->
+  <footer class="ww-footer">
+    <p>
+      &copy; <%= new Date().getFullYear() %> Ward Works. Built for ward leaders &amp; members.
+    </p>
+  </footer>
+
+  <!-- Nav behavior script -->
+  <script src="/js/main.js"></script>
+</body>
+</html>

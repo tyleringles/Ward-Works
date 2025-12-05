@@ -1,0 +1,144 @@
+<main class="ww-main">
+  <!-- Page Header -->
+  <header class="ww-page-header">
+    <div>
+      <h1>Church Info</h1>
+      <p class="ww-page-subtitle">
+        When and where we meet, plus our ward calendar and upcoming events.
+      </p>
+    </div>
+  </header>
+
+  <!-- Location + Calendar -->
+  <section class="ww-card">
+    <div class="ww-two-column">
+
+      <!-- LEFT COLUMN -->
+      <div class="ww-col">
+        <h2>Meetinghouse Location</h2>
+
+        <p>
+          We meet at <strong>12:00 pm</strong> in the
+          <strong>Aztec Building – South Chapel</strong>, located at:
+        </p>
+
+        <p>
+          <strong>
+            1295 N 800 E<br />
+            Logan, UT 84341
+          </strong>
+        </p>
+
+        <!-- Meetinghouse Image -->
+        <div class="ww-image-wrapper">
+          <img
+            src="/img/meetinghouse.jpg"
+            alt="Aztec Building - South Chapel"
+            class="ww-image"
+          />
+        </div>
+
+        <!-- Map -->
+        <div class="ww-map-embed">
+          <iframe
+            src="https://www.google.com/maps?q=1295+N+800+E,+Logan,+UT+84341&output=embed"
+            width="100%"
+            height="280"
+            style="border:0;"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="ww-col">
+        <h2>Ward Calendar</h2>
+
+        <p class="ww-page-subtitle">
+          Ward Works keeps track of sacrament meetings, FHE, activities, and
+          other ward events so members can easily stay informed.
+        </p>
+
+        <p class="ww-muted">
+          Use the link below to view the full calendar, or browse upcoming events.
+        </p>
+
+        <p style="margin-top: 1rem;">
+          <a href="/events" class="ww-button ww-button-primary">
+            View Full Ward Calendar
+          </a>
+        </p>
+
+        <!-- Admin Link -->
+        <% if (isAuthenticated && currentUser && currentUser.role === 'admin') { %>
+          <p class="ww-muted" style="margin-top: 0.5rem;">
+            As a leader, you can manage events on the
+            <a href="/events/admin" class="ww-card-link">Events Admin page</a>.
+          </p>
+        <% } %>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- UPCOMING EVENTS SECTION -->
+  <% if (events && events.length > 0) { %>
+    <section class="ww-card" style="margin-top: 1.25rem;">
+      <h2>Upcoming Events</h2>
+
+      <div class="mini-calendar-list">
+        <% events.forEach(event => { %>
+
+          <div class="mini-event-card">
+
+            <!-- Date Box -->
+            <div class="mini-date-box">
+              <div class="mini-date-month">
+                <%= new Date(event.startDate).toLocaleString('en-US', { month: 'short' }) %>
+              </div>
+              <div class="mini-date-day">
+                <%= new Date(event.startDate).getDate() %>
+              </div>
+            </div>
+
+            <!-- Event Info -->
+            <div class="mini-event-info">
+              <h3><%= event.title %></h3>
+
+              <p>
+                <%= event.startTime || '' %>
+                <% if (event.location) { %>
+                  · <%= event.location %>
+                <% } %>
+              </p>
+
+              <% if (event.description) { %>
+                <p class="mini-event-desc"><%= event.description %></p>
+              <% } %>
+            </div>
+
+          </div>
+        <% }) %>
+      </div>
+
+      <a href="/events" class="ww-card-link" style="margin-top: 1rem; display: inline-block;">
+        View full Ward Works calendar →
+      </a>
+    </section>
+
+  <% } else { %>
+
+    <section class="ww-card" style="margin-top: 1.25rem;">
+      <h2>Upcoming Events</h2>
+      <p>No upcoming events have been added yet.</p>
+
+      <a href="/events" class="ww-card-link">
+        Open Ward Works calendar →
+      </a>
+    </section>
+
+  <% } %>
+
+</main>
