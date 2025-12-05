@@ -20,7 +20,7 @@ const expressLayouts = require('express-ejs-layouts');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const axios = require('axios');
-const multer = require('multer');
+
 
 // profile routes live in their own file
 const profileRoutes = require('./routes/profile');
@@ -39,36 +39,6 @@ const app = express();
 app.use(express.json()); // parse JSON bodies 
 app.use(express.urlencoded({ extended: true })); // parse regular form posts
 app.use(methodOverride('_method')); // supports ?_method=PUT/DELETE from forms
-
-
-//This is all my Muller stuff
-// store uploaded files on disk in uploads
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'uploads'));
-  },
-  filename: (req, file, cb) => {
-    // timestamp in front so filenames stay unique
-    const timestamp = new Date().toISOString().replace(/:/g, '-');
-    cb(null, timestamp + '-' + file.originalname);
-  }
-});
-
-// only allow image file types
-const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === 'image/png' ||
-    file.mimetype === 'image/jpg' ||
-    file.mimetype === 'image/jpeg'
-  ) {
-    cb(null, true);
-  } else {
-    cb(null, false); // ignore all the non-image files
-  }
-};
-
-//  multer into the app 
-app.use(multer({ storage: fileStorage, fileFilter }).single('avatar'));
 
 
 //The Static files

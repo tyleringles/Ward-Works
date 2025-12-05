@@ -1,44 +1,39 @@
 // This middlewear saves uploaded files renames them with a timestamp, will only allow certian file types to prevent the weird ones, limits the size of file as well
 // Past what we learned in class, using multer's diskStorage for files, also validates them, also added file size limits, and used a path.join for folder locations
 
+// middleware/upload.js
+// Handles profile photo uploads with Multer
 
 const multer = require('multer');
 const path = require('path');
 
-
-// Storage configuration
+// Where to store uploaded files
 const storage = multer.diskStorage({
-
-  //   I used /public/upload in my dircetory so images can be seen publicly
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '..', 'public', 'uploads'));
+  destination: function (req, file, cb) {
+    // Save into /uploads at the project root
+    cb(null, path.join(__dirname, '..', 'uploads'));
   },
-
- 
-  //   each file is given a unique name so multiple uploads don't overwrite each other
-  filename: (req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname); 
-    cb(null, file.fieldname + '-' + unique + ext);
+  filename: function (req, file, cb) {
+    // Example: 2025-12-05T20-37-43.632Z-avatar.png
+    const safeTimestamp = new Date().toISOString().replace(/:/g, '-');
+    cb(null, `${safeTimestamp}-${file.originalname}`);
   }
 });
 
-//this is the image part where it only allows certain types
+// Only allow image files
 const fileFilter = (req, file, cb) => {
-  const isImage = /^image\/(jpe?g|png|gif|webp)$/i.test(file.mimetype);
-
-  if (isImage) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only image files are allowed'), false);
+  if (!file.mimetype.startsWith('image/')) {
+    return cb(null, false); // silently ignore non-images
   }
+  cb(null, true);
 };
 
-//this uses the new packages
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 } // gives it a 2 MB max
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5 MB
+  }
 });
 
 module.exports = upload;
