@@ -582,6 +582,10 @@ body {
   margin-bottom: 0.9rem;
   font-size: 0.9rem;
   color: #64748b;
+  line-height: 1.5;      /* allow comfy spacing */
+  white-space: normal;   /* allow wrap to new lines */
+  overflow: visible;     /* don't cut off extra lines */
+  text-overflow: clip;   /* no ellipsis */
 }
 
 .auth-error {
