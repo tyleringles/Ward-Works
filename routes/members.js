@@ -17,11 +17,11 @@ router.get('/', isAuth, memberController.list);
 router.get('/new', isAuth, memberController.showNew);
 
 // Create a new member (photo upload allowed)
-router.post('/', isAuth, upload.single('photo'), memberController.create);
+router.post('/', isAuth, upload.single('avatar'), memberController.create);
 
-//
-// INDIVIDUAL MEMBER PAGES
-//
+// Update member (photo upload optional)
+router.put('/:id', isAuth, upload.single('avatar'), memberController.update);
+
 
 // View details for a single member
 router.get('/:id', isAuth, memberController.show);
@@ -29,8 +29,6 @@ router.get('/:id', isAuth, memberController.show);
 // Show edit form for a member
 router.get('/:id/edit', isAuth, memberController.showEdit);
 
-// Update member (photo upload optional)
-router.put('/:id', isAuth, upload.single('photo'), memberController.update);
 
 // Confirm delete page
 router.get('/:id/delete-confirm', isAuth, memberController.confirmDelete);
